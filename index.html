@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>LoboTutor by HoboApps</title>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+      html {
+        position: relative;
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        padding: 0;
+        position: absolute;
+      }
+      .navbar-inverse {
+        background-image: none;
+        background-color: #c10037;
+      }
+      .navbar-inverse .navbar-brand {
+        color: #f5f5f5;
+      }
+      #map {
+        height: 100%;
+      }
+      #homeSearchAsType {
+        position: absolute;
+        top: 60px;
+        width: 95%;
+        left: 2.5%;
+        right: 2.5%;
+      }
+      .footer {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        /* Set the fixed height of the footer here */
+        height: 60px;
+        background-color: #c10037;
+      }
+      body > .container {
+        padding: 50px 0 0;
+      }
+      .footer ul {
+        margin: 10px 0;
+      }
+      .footer a {
+        color: #f5f5f5;
+      }
+      .footer ul li {
+        font-size: x-large;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+<!--           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button> -->
+          <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a>
+        </div>
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+
+    <!-- Begin page content -->
+    <div id="map"></div>
+    <input id="homeSearchAsType" type="text" class="form-control" name="" placeholder="What are you looking to learn?" />
+
+    <!-- Student Settings -->
+    <div class="modal fade" id="studentSettings" tabindex="-1" role="dialog" aria-labelledby="studentSettingsLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="studentSettingsLabel">My Profile</h4>
+          </div>
+          <div class="modal-body">
+            <form id="studentSettingsForm">
+              <div class="form-group">
+                <input type="text" class="form-control" name="subjects" placeholder="What are you interested in learning?" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="saveStudentSettings" type="button" class="btn btn-danger">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="logOutButton" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tutor Settings -->
+    <div class="modal fade" id="tutorSettings" tabindex="-1" role="dialog" aria-labelledby="tutorSettingsLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="tutorSettingsLabel">Tutor Profile</h4>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="form-group">
+                <input type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="rate" placeholder="Hourly rate" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="location" placeholder="Location" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="saveTutorSettings" type="button" class="btn btn-danger">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- About -->
+    <div class="modal fade" id="aboutPage" tabindex="-1" role="dialog" aria-labelledby="aboutPageLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="aboutPageLabel">About</h4>
+          </div>
+          <div class="modal-body">
+            <p>Hobo Apps is based in Albuquerque, NM. Our mission is to create something worthy of winning the app contest.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- log in -->
+    <div class="modal fade" id="logInPage" tabindex="-1" role="dialog" aria-labelledby="logInPageLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="logInPageLabel">Login</h4>
+          </div>
+          <div class="modal-body">
+            <form id="loginForm">
+              <div class="form-group">
+                <input type="text" class="form-control" name="netid" placeholder="UNM NetID" />
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" name="password" placeholder="LoboTutor password" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="loginButton" type="button" class="btn btn-danger">Login</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#registerPage" data-dismiss="modal">Create account</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- register -->
+    <div class="modal fade" id="registerPage" tabindex="-1" role="dialog" aria-labelledby="registerPageLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="registerPageLabel">Register</h4>
+          </div>
+          <div class="modal-body">
+            <form id="createAccountForm">
+              <div class="form-group">
+                <input type="text" class="form-control" name="name" placeholder="Name" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="netid" placeholder="School email" />
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" name="password" placeholder="LoboTutor password" />
+              </div>
+              <div class="form-group">
+                <input type="password" class="form-control" name="password_confirm" placeholder="Confirm LoboTutor password" />
+              </div>
+              <hr />
+              <div class="form-group">
+                <input type="text" class="form-control" name="dept" placeholder="Department" />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="createAccountButton" data-loading-text="Creating..." type="button" class="btn btn-danger">Create account</button>
+            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#logInPage" data-dismiss="modal">Login</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="container">
+        <ul class="nav nav-pills">
+          <li><a href="#student-profile" data-toggle="modal" data-target="#logInPage"><span class="glyphicon glyphicon-user" aria-hidden="true" title="Login"></span></a></li>
+          <li><a href="#tutor-profile"><span class="glyphicon glyphicon-education" aria-hidden="true" title="Become a tutor"></span></a></li>
+          <li><a href="#" data-toggle="modal" data-target="#aboutPage"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" title="About"></span></a></li>
+        </ul>
+      </div>
+    </footer>
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <!-- firebase -->
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-database.js"></script>
+    <!-- Leave out Storage -->
+    <!-- <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-storage.js"></script> -->
+    
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script>
+      $(document).ready( function () {
+        // Initialize Firebase
+        var config = {
+          apiKey: "AIzaSyB7NvzRR35IhafEfpimyJ94e7vpK1rKD2c",
+          authDomain: "lobotutor-5ebc3.firebaseapp.com",
+          databaseURL: "https://lobotutor-5ebc3.firebaseio.com",
+          storageBucket: "lobotutor-5ebc3.appspot.com",
+          messagingSenderId: "1049411663613"
+        };
+        firebase.initializeApp(config)
+
+        // initialize map
+        var map = new google.maps.Map(document.getElementById('map'), {
+          center: {lat: 0, lng: 0},
+          zoom: 16,
+          mapTypeControl: false
+        })
+
+        // initialize user object
+        user = {
+          location:  {
+            latlng: null,
+            update: function () {
+              navigator.geolocation.getCurrentPosition(function(position) {
+                user.location.latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+                map.setCenter(user.location.latlng)
+                var marker = new google.maps.Marker({
+                  position: user.location.latlng,
+                  map:map
+                })
+              })
+            }
+          }
+        }
+        // update location, does not need login
+        user.location.update()
+
+        /* initialize done, functions 1s after page load because eff firebase */
+        
+        // if logged in, get information from database
+        setTimeout( function() {
+          // update map with user's subjects
+        }, 1000 )
+        
+        /* events */
+        
+        // profile button functionality
+        $('a[href="#student-profile"]').click( function() {
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          $('#studentSettings').modal('show')
+          return false
+          // pre-populate form
+
+        } )
+        
+        // login functionality
+        $('#loginButton').on('click', function () {
+          var $btn = $(this).button('loading')
+          email = $('#loginForm').find('input[name=netid]').val().trim()
+          password = $('#loginForm').find('input[name=password]').val().trim()
+          firebase.auth().signInWithEmailAndPassword( email, password )
+            .then( function () {
+              $btn.button('reset')
+              $('#logInPage').modal('hide')
+            }, function(error) {
+              alert(error.message)
+              $btn.button('reset')
+            } );
+        })
+
+        // logout functionality
+        $('#logOutButton').on('click', function () {
+          var $btn = $(this).button('loading')
+          firebase.auth().signOut().then(function() {
+            $btn.button('reset')
+            $('#studentSettings').modal('hide')
+          }, function(error) {
+            alert(error.message)
+            $btn.button('reset')
+          });
+        })
+
+        // register functionality
+        $('#createAccountButton').on('click', function () {
+          var $btn = $(this).button('loading')
+          email = $('#createAccountForm').find('input[name=netid]').val().trim()
+          password = $('#createAccountForm').find('input[name=password]').val().trim()
+          firebase.auth().createUserWithEmailAndPassword( email, password )
+            .then( function () {
+              $btn.button('reset')
+              $('#registerPage').modal('hide')
+            }, function (error) {
+              alert(error.message)
+              $btn.button('reset')
+            } );
+        })
+
+        // save student settings
+        $('#saveStudentSettings').on('click', function () {
+          var $btn = $(this).button('loading')
+
+        })
+
+        // subject search box code
+        // autocomplete
+        // get tutors, show on map
+
+        // tap a tutor code
+        // check if logged in
+        // show tutor information
+
+        // contact tutor - todo
+
+        // become a tutor button
+        $('a[href="#tutor-profile"]').click( function() {
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          $('#tutorSettings').modal('show')
+          return false
+          // pre-populate form
+        } )
+
+        // tutor setting save changes functionality
+        $('#saveTutorSettings').on('click', function () {
+          var $btn = $(this).button('loading')
+          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).set({
+            tutor_settings: $('#tutorSettings').find('input[name=subjects]').val()
+          }).then( function () {
+            $btn.button('reset')
+          }, function (error) {
+            alert(error.message)
+          } );
+        })
+
+      } )
+
+    </script>
+  </body>
+</html>
