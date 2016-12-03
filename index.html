@@ -129,6 +129,12 @@
             <h4 class="modal-title" id="tutorSettingsLabel">Tutor Profile</h4>
           </div>
           <div class="modal-body">
+            <div class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button id="tutorLocationUpdate" type="button" class="btn btn-warning" data-loading-text="updating...">Update location</button>
+              </div>
+            </div>
+            <br />
             <form>
               <div class="form-group">
                 <input type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?" />
@@ -143,7 +149,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="saveTutorSettings" type="button" class="btn btn-danger">Save changes</button>
+            <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
           </div>
         </div>
       </div>
@@ -279,13 +285,17 @@
           location:  {
             latlng: null,
             update: function () {
+              // get user's location
               navigator.geolocation.getCurrentPosition(function(position) {
+                // get latlng
                 user.location.latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+                // center the map
                 map.setCenter(user.location.latlng)
-                var marker = new google.maps.Marker({
-                  position: user.location.latlng,
-                  map:map
-                })
+                // put a marker at user's location
+                // var marker = new google.maps.Marker({
+                //   position: user.location.latlng,
+                //   map:map
+                // })
               })
             }
           }
@@ -293,8 +303,18 @@
         // update location, does not need login
         user.location.update()
 
-        /* initialize done, functions 1s after page load because eff firebase */
-        
+        // load all profiles from firebase because eff firebase
+        // then show on map
+        profiles = {}
+        var reloadProfiles = function () {
+          firebase.database().ref('/profile/').once('value').then( function (snapshot) {
+            profiles = snapshot.val()
+            // show on map
+          } )
+        }
+        reloadProfiles()
+
+        /* initialize done, user profile related functions 1s after page load because eff firebase */
         // if logged in, get information from database
         setTimeout( function() {
           // update map with user's subjects
@@ -392,13 +412,30 @@
         // tutor setting save changes functionality
         $('#saveTutorSettings').on('click', function () {
           var $btn = $(this).button('loading')
-          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).set({
+          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update({
             tutor_settings: $('#tutorSettings').find('input[name=subjects]').val()
           }).then( function () {
             $btn.button('reset')
+            reloadProfiles()
           }, function (error) {
             alert(error.message)
           } );
+        })
+
+        // tutor location update
+        $('#tutorLocationUpdate').on('click', function () {
+          var $btn = $(this).button('loading')
+          navigator.geolocation.getCurrentPosition(function(position) {
+            firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update({
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            }).then( function () {
+              $btn.button('reset')
+              reloadProfiles()
+            }, function (error) {
+              alert(error.message)
+            } );
+          })
         })
 
       } )
