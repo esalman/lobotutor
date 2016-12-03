@@ -61,6 +61,7 @@
       body > .container {
         padding: 50px 0 0;
       }
+      /*
       .footer ul {
         margin: 10px 0;
       }
@@ -70,7 +71,35 @@
       .footer ul li {
         font-size: x-large;
       }
-    </style>
+      */
+      .footer ul {
+        /*Equally spaced footer buttons*/
+          display: -moz-box;
+          display: -webkit-box;
+          display: box;
+
+          width: 100%;
+          border: 0;
+          padding: 0;
+          background-color: #c10037;
+      }
+
+      .footer a {
+          display: block;
+          padding: 0.25em 0;
+          color: #f5f5f5;
+          background-color: #c10037;
+          text-decoration: none;
+          text-align: center;
+      }
+      .footer li {
+          -moz-box-flex: 1;
+          -webkit-box-flex: 1;
+          box-flex: 1;
+          
+          font-size: x-large;
+      }
+     </style>
   </head>
   <body>
     <!-- Fixed navbar -->
