@@ -380,6 +380,10 @@
             $('#logInPage').modal('show')
             return false 
           }
+          firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
+            var subjects = snapshot.val().tutor_settings;
+            $('#tutorSettings').find('input[name=subjects]').val(subjects)
+          });
           $('#tutorSettings').modal('show')
           return false
           // pre-populate form
