@@ -7,6 +7,13 @@
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <title>LoboTutor by boApps</title>
 
+    <!-- check for https -->
+    <script type="text/javascript">
+      if (location.protocol != 'https:') {
+        location.href = 'https:' + window.location.href.substring(window.location.protocol.length);
+      }
+    </script>
+
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 
@@ -103,6 +110,43 @@
           text-decoration: none;
           background-color: #c10037;
       }
+
+      .contain{
+        position: relative;
+        width:50%;
+        height:auto;
+        right:-25%;
+      }
+
+      .circle-avatar{
+        /* make it responsive */
+        max-width: 100%;
+        width:100%;
+        height:auto;/*auto*/
+        display:block;
+        /* div height to be the same as width*/
+        padding-top:100%;
+        
+        /* make it a circle */
+        border-radius:50%;
+        
+        /* Centering on image`s center*/
+        background-position-y: center;
+        background-position-x: center;
+        background-repeat: no-repeat;
+        
+        /* it makes the clue thing, takes smaller dimention to fill div */
+        background-size: cover;
+
+        /* it is optional, for making this div centered in parent*/
+        margin: 0 auto;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+      }
+
+      
      </style>
   </head>
   <body>
@@ -163,8 +207,9 @@
           </div>
           <div class="modal-body">
 
-            <div class="text-center">
-              <img src="http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg" alt="logo" class="img-circle" style="width:140px; height:140px;" />
+            <div class = "contain">
+                <div class="circle-avatar" style="background-image:url(http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg)">
+                </div>
             </div>
 
             <br />
@@ -323,7 +368,7 @@
     <!-- Leave out Storage -->
     <!-- <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-storage.js"></script> -->
     
-    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCQLOEhiGJrB1fkFQPT9KjgQ3MOcGNpLic"></script>
     <script>
       $(document).ready( function () {
         // Initialize Firebase
@@ -364,6 +409,9 @@
                 //   position: user.location.latlng,
                 //   map:map
                 // })
+              }, function (error) {
+                // center the map at UNM
+                map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
               })
             }
           }
