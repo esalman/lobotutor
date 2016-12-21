@@ -161,6 +161,7 @@
     </div>
 
     <!-- Tutor Settings -->
+    <!-- payment, name, profile pic, email, topics, status (active, inactive), 5 star rating, trophies/badges,etc.-->
     <div class="modal fade" id="tutorSettings" tabindex="-1" role="dialog" aria-labelledby="tutorSettingsLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -435,7 +436,7 @@
               $btn.button('reset')
               $('#logInPage').modal('hide')
             }, function(error) {
-              alert(error.message)
+              alert("Please use a valid university email address.") <!--error.message-->
               $btn.button('reset')
             } );
         })
