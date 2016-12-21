@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=0">
     <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <title>LoboTutor by boApps</title>
+    <title>LoboTutor by HoboApps</title>
 
     <!-- check for https -->
     <script type="text/javascript">
@@ -117,43 +117,6 @@
           text-decoration: none;
           background-color: #c10037;
       }
-
-      .contain{
-        position: relative;
-        width:50%;
-        height:auto;
-        right:-25%;
-      }
-
-      .circle-avatar{
-        /* make it responsive */
-        max-width: 100%;
-        width:100%;
-        height:auto;/*auto*/
-        display:block;
-        /* div height to be the same as width*/
-        padding-top:100%;
-        
-        /* make it a circle */
-        border-radius:50%;
-        
-        /* Centering on image`s center*/
-        background-position-y: center;
-        background-position-x: center;
-        background-repeat: no-repeat;
-        
-        /* it makes the clue thing, takes smaller dimention to fill div */
-        background-size: cover;
-
-        /* it is optional, for making this div centered in parent*/
-        margin: 0 auto;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-      }
-
-      
      </style>
   </head>
   <body>
@@ -222,9 +185,8 @@
           </div>
           <div class="modal-body">
 
-            <div class = "contain">
-                <div class="circle-avatar" style="background-image:url(http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg)">
-                </div>
+            <div class="text-center">
+              <img class="img-circle" src="http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg" style="max-height: 140px;" />
             </div>
 
             <br />
@@ -449,6 +411,7 @@
                 map:map,
                 uid: k
               })
+              // load tutor profile on marker click
               google.maps.event.addListener(marker, 'click', function() {
                 $('#tutorProfileLabel').html( marker.uid )
                 $('#tutorProfile').modal('show')
@@ -524,10 +487,22 @@
           var $btn = $(this).button('loading')
           email = $('#createAccountForm').find('input[name=netid]').val().trim()
           password = $('#createAccountForm').find('input[name=password]').val().trim()
+          name = $('#createAccountForm').find('input[name=name]').val().trim() ? $('#createAccountForm').find('input[name=name]').val().trim() : email.substring(0, email.indexOf("@"))
+          dept = $('#createAccountForm').find('input[name=dept]').val().trim()
           firebase.auth().createUserWithEmailAndPassword( email, password )
             .then( function () {
               $btn.button('reset')
               $('#registerPage').modal('hide')
+              // update profile information
+              postData = {
+                name: name,
+                dept: dept
+              }
+              firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
+                reloadProfiles()
+              }, function (error) {
+                alert(error.message)
+              } );
             }, function (error) {
               alert(error.message)
               $btn.button('reset')
@@ -569,9 +544,11 @@
         // tutor setting save changes functionality
         $('#saveTutorSettings').on('click', function () {
           var $btn = $(this).button('loading')
-          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update({
+          postData = {
+            name: $('#tutorSettings').find('input[name=subjects]').val() ? $('#tutorSettings').find('input[name=name]').val() : '',
             tutor_settings: $('#tutorSettings').find('input[name=subjects]').val()
-          }).then( function () {
+          }
+          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
             $btn.button('reset')
             reloadProfiles()
           }, function (error) {
