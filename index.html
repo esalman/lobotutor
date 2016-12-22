@@ -434,6 +434,46 @@
           streetViewControl: false,
         })
 
+        // Create the DIV to hold the control and call the CustomControl() constructor passing in this DIV.
+        var customControlDiv = document.createElement('div');
+        var customControl = new CustomControl(customControlDiv, map);
+
+        customControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(customControlDiv);
+
+        function CustomControl(controlDiv, map) {
+         
+            // Set CSS for the control border.
+            var controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.border = '2px solid #fff';
+            controlUI.style.borderRadius = '3px';
+            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.marginBottom = '22px';
+            controlUI.style.marginRight = '10px';
+            controlUI.style.textAlign = 'center';
+            controlUI.title = 'Click to recenter the map';
+            controlDiv.appendChild(controlUI);
+
+            // Set CSS for the control interior.
+            var controlText = document.createElement('div');
+            controlText.style.color = '#686868';
+            controlText.style.fontSize = '16px';
+            controlText.style.lineHeight = '24px';
+            controlText.style.paddingLeft = '4px';
+            controlText.style.paddingBottom = '0px';
+            controlText.style.paddingTop = '2px';
+            controlText.style.paddingRight = '4px';
+            controlText.innerHTML = '<span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>';
+            controlUI.appendChild(controlText);
+
+            // Setup the click event listeners
+            google.maps.event.addDomListener(controlUI, 'click', function () {
+                        user.location.update();
+            });
+        }
+
         // initialize user object
         user = {
           location:  {
@@ -510,17 +550,14 @@
           email = $('#loginForm').find('input[name=netid]').val().trim()
           password = $('#loginForm').find('input[name=password]').val().trim()
           firebase.auth().signInWithEmailAndPassword( email, password )
-            .then( function () {
-
-              $("#alertMessage #alertMessageSpan").html("<strong> Hello! </strong> You have successfully logged in.")
-              $("#alertMessage").show()
+            .then( function (u) {
               $btn.button('reset')
               $('#logInPage').modal('hide')
+              $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + u.displayName + "! </strong> You have successfully logged in.")
+              $("#alertMessage").show()
               setTimeout( function() {
-                //$(".alert").alert('close')
                 $("#alertMessage").hide()
-              }, 2000 ) 
-
+              }, 2000 )
             }, function(error) {
               // Handle Errors here.
               var errorCode = error.code;
@@ -542,27 +579,11 @@
         })
 
         // logout functionality
-        $('#logOutButton').on('click', function () {
+        $('#logOutButton, #logOutButton2').on('click', function () {
           var $btn = $(this).button('loading')
+          name = firebase.auth().currentUser.displayName
           firebase.auth().signOut().then(function() {
-            $("#alertMessage #alertMessageSpan").html("<strong> Goodbye! </strong> You are now logged out.")
-            $("#alertMessage").show()
-            $btn.button('reset')
-            $('#studentSettings').modal('hide')
-            setTimeout( function() {
-               $("#alertMessage").hide()
-            }, 2000 ) 
-          }, function(error) {
-            alert(error.message)
-            $btn.button('reset')
-          });
-        })
-
-        // logout functionality
-        $('#logOutButton2').on('click', function () {
-          var $btn = $(this).button('loading')
-          firebase.auth().signOut().then(function() {
-            $("#alertMessage #alertMessageSpan").html("<strong> Goodbye! </strong> You are now logged out.")
+            $("#alertMessage #alertMessageSpan").html("<strong>Goodbye " + name + "!</strong> You are now logged out.")
             $("#alertMessage").show()
             $btn.button('reset')
             $('#studentSettings').modal('hide')
@@ -578,17 +599,29 @@
         // register functionality
         $('#createAccountButton').on('click', function () {
           var $btn = $(this).button('loading')
+          // get register data from the form
           email = $('#createAccountForm').find('input[name=netid]').val().trim()
           password = $('#createAccountForm').find('input[name=password]').val().trim()
           name = $('#createAccountForm').find('input[name=name]').val().trim() ? $('#createAccountForm').find('input[name=name]').val().trim() : email.substring(0, email.indexOf("@"))
           dept = $('#createAccountForm').find('input[name=dept]').val().trim()
+          // register
           firebase.auth().createUserWithEmailAndPassword( email, password )
             .then( function () {
+              // hide register page
               $btn.button('reset')
               $('#registerPage').modal('hide')
+
+              // update display name
+              firebase.auth().currentUser.updateProfile({
+                displayName: name
+              }).then(function() {
+                var displayName = user.displayName;
+              }, function(error) {
+                alert(error.message)
+              });
+
               // update profile information
               postData = {
-                name: name,
                 dept: dept
               }
               firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
