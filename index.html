@@ -64,6 +64,10 @@
           left: 2.5%;
           right: 2.5%;
       }
+
+     /* #tutorLocationUpdate {
+          background-color: #c10037;
+      }*/
       .footer {
         position: absolute;
         bottom: 0;
@@ -117,6 +121,17 @@
           text-decoration: none;
           background-color: #c10037;
       }
+
+      .navbar-toggle {
+        border:none;
+        font-size:larger;
+        color:white;
+      }
+
+      .navbar-inverse .navbar-toggle:focus{
+        background-color:transparent;
+      }
+
      </style>
   </head>
   <body>
@@ -124,12 +139,17 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-<!--           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+ <!--          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
+
+          <button type="button" class="navbar-toggle collapsed" data-toggle="modal" data-target="#Settings" aria-expanded="false" aria-controls="navbar" aria-hidden="true">
+          <span class="glyphicon glyphicon-cog"</span>
+          </button>
+
           <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
@@ -148,6 +168,47 @@
         <span aria-hidden="true">&times;</span>
       </button>
       <span id="alertMessageSpan"> <strong>Well done!</strong> You have successfully logged in.</span>
+    </div>
+
+    <!-- Main settings 
+    Profile Picture, Name, email, Password, Department-->
+
+    <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="userSettingsLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="userSettingsLabel">User Settings</h4>
+          </div>
+          <div class="modal-body">
+
+            <div class="text-center">
+              <img class="img-circle" src="http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg" style="max-height: 140px;" />
+            </div>
+
+            <br />
+            <form>
+              <div class="form-group">
+                <input type="text" class="form-control" name="name" placeholder="Name" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="email" placeholder="Email address" />
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" name="password" placeholder="Password" />
+              </div>
+              <div class="form-group">
+                <input type="file" accept="image/*" capture="camera">
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Student Settings -->
@@ -192,7 +253,7 @@
             <br />
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
-                <button id="tutorLocationUpdate" type="button" class="btn btn-warning" data-loading-text="updating...">Update location</button>
+                <button id="tutorLocationUpdate" type="button" class="btn btn-danger" data-loading-text="updating...">Update location</button> <!--btn-warning-->
               </div>
             </div>
 
@@ -461,7 +522,21 @@
               }, 2000 ) 
 
             }, function(error) {
-              alert("Please use a valid university email address and/or password.") <!--error.message-->
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              if (errorCode === 'auth/wrong-password') {
+                alert('Invalid password.  Please try again.');
+              } 
+              else if (errorCode === 'auth/user-not-found') {
+                alert('User email not found.');
+              } 
+              else if (errorCode === 'auth/invalid-email') {
+                alert('Invalide email address.  Please use a valid university email address.');
+              } 
+              else {
+                alert("Please use a valid university email address and/or password.") <!--error.message-->
+              }
               $btn.button('reset')
             } );
         })
