@@ -489,45 +489,26 @@
           email = $('#loginForm').find('input[name=netid]').val().trim()
           password = $('#loginForm').find('input[name=password]').val().trim()
           firebase.auth().signInWithEmailAndPassword( email, password )
-            .then( function () {
-
-              $("#alertMessage #alertMessageSpan").html("<strong> Hello! </strong> You have successfully logged in.")
-              $("#alertMessage").show()
+            .then( function (u) {
               $btn.button('reset')
               $('#logInPage').modal('hide')
+              $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + u.displayName + "! </strong> You have successfully logged in.")
+              $("#alertMessage").show()
               setTimeout( function() {
-                //$(".alert").alert('close')
                 $("#alertMessage").hide()
-              }, 2000 ) 
-
+              }, 2000 )
             }, function(error) {
-              alert("Please use a valid university email address and/or password.") <!--error.message-->
+              alert("Please use a valid university email address and/or password.") // error.message
               $btn.button('reset')
             } );
         })
 
         // logout functionality
-        $('#logOutButton').on('click', function () {
+        $('#logOutButton, #logOutButton2').on('click', function () {
           var $btn = $(this).button('loading')
+          name = firebase.auth().currentUser.displayName
           firebase.auth().signOut().then(function() {
-            $("#alertMessage #alertMessageSpan").html("<strong> Goodbye! </strong> You are now logged out.")
-            $("#alertMessage").show()
-            $btn.button('reset')
-            $('#studentSettings').modal('hide')
-            setTimeout( function() {
-               $("#alertMessage").hide()
-            }, 2000 ) 
-          }, function(error) {
-            alert(error.message)
-            $btn.button('reset')
-          });
-        })
-
-        // logout functionality
-        $('#logOutButton2').on('click', function () {
-          var $btn = $(this).button('loading')
-          firebase.auth().signOut().then(function() {
-            $("#alertMessage #alertMessageSpan").html("<strong> Goodbye! </strong> You are now logged out.")
+            $("#alertMessage #alertMessageSpan").html("<strong>Goodbye " + name + "!</strong> You are now logged out.")
             $("#alertMessage").show()
             $btn.button('reset')
             $('#studentSettings').modal('hide')
@@ -543,17 +524,29 @@
         // register functionality
         $('#createAccountButton').on('click', function () {
           var $btn = $(this).button('loading')
+          // get register data from the form
           email = $('#createAccountForm').find('input[name=netid]').val().trim()
           password = $('#createAccountForm').find('input[name=password]').val().trim()
           name = $('#createAccountForm').find('input[name=name]').val().trim() ? $('#createAccountForm').find('input[name=name]').val().trim() : email.substring(0, email.indexOf("@"))
           dept = $('#createAccountForm').find('input[name=dept]').val().trim()
+          // register
           firebase.auth().createUserWithEmailAndPassword( email, password )
             .then( function () {
+              // hide register page
               $btn.button('reset')
               $('#registerPage').modal('hide')
+
+              // update display name
+              firebase.auth().currentUser.updateProfile({
+                displayName: name
+              }).then(function() {
+                var displayName = user.displayName;
+              }, function(error) {
+                alert(error.message)
+              });
+
               // update profile information
               postData = {
-                name: name,
                 dept: dept
               }
               firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
