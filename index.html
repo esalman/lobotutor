@@ -64,6 +64,10 @@
           left: 2.5%;
           right: 2.5%;
       }
+
+     /* #tutorLocationUpdate {
+          background-color: #c10037;
+      }*/
       .footer {
         position: absolute;
         bottom: 0;
@@ -117,6 +121,17 @@
           text-decoration: none;
           background-color: #c10037;
       }
+
+      .navbar-toggle {
+        border:none;
+        font-size:larger;
+        color:white;
+      }
+
+      .navbar-inverse .navbar-toggle:focus{
+        background-color:transparent;
+      }
+
      </style>
   </head>
   <body>
@@ -124,12 +139,17 @@
     <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container">
         <div class="navbar-header">
-<!--           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+ <!--          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
             <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
+
+          <button type="button" class="navbar-toggle collapsed" data-toggle="modal" data-target="#Settings" aria-expanded="false" aria-controls="navbar" aria-hidden="true">
+          <span class="glyphicon glyphicon-cog"</span>
+          </button>
+
           <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
@@ -150,25 +170,90 @@
       <span id="alertMessageSpan"> <strong>Well done!</strong> You have successfully logged in.</span>
     </div>
 
+    <!-- Main settings 
+    Profile Picture, Name, email, Password, Department-->
+    <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="userSettingsLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="userSettingsLabel">User Settings</h4>
+          </div>
+          <div class="modal-body">
+
+            <div class="text-center">
+              <img class="img-circle" src="http://www.sports-logos-screensavers.com/user/New_Mexico_Lobos.jpg" style="max-height: 140px;" />
+            </div>
+
+            <br />
+
+            <form>
+              <div class="form-group">
+                <label for="deptInput">Name</label>
+                <input type="name" class="form-control" id="nameInput" name="name" placeholder="Name">
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" name = "email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">Your email address will be kept confidential.</small>
+              </div>
+
+              <div class="form-group">
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+              </div>
+
+              <div class="form-group">
+                <label for="deptInput">Department</label>
+                <input type="dept" class="form-control" id="deptInput" name="dept" placeholder="Department">
+              </div>
+ <!--              <div class="form-group">
+                <label for="exampleSelect1">Example select</label>
+                <select class="form-control" id="exampleSelect1">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div> -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Logout</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Student Settings -->
     <div class="modal fade" id="studentSettings" tabindex="-1" role="dialog" aria-labelledby="studentSettingsLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="studentSettingsLabel">My Profile</h4>
+            <h4 class="modal-title" id="studentSettingsLabel">Class Schedule </h4>
           </div>
           <div class="modal-body">
             <form id="studentSettingsForm">
               <div class="form-group">
-                <input type="text" class="form-control" name="subjects" placeholder="What are you interested in learning?" />
+                <input type="text" class="form-control" name="subjects" placeholder="h" />
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button id="saveStudentSettings" type="button" class="btn btn-danger">Save changes</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButton" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
+            <form class="form-inline">
+              <div class="form-group">
+                <label for="exampleInputEmail2">Class</label>
+                <input type="email" class="form-control" id="exampleInputEmail2" placeholder="ECE 500">
+              </div>
+              <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -192,7 +277,7 @@
             <br />
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
-                <button id="tutorLocationUpdate" type="button" class="btn btn-warning" data-loading-text="updating...">Update location</button>
+                <button id="tutorLocationUpdate" type="button" class="btn btn-danger" data-loading-text="updating...">Update location</button> <!--btn-warning-->
               </div>
             </div>
 
@@ -208,7 +293,7 @@
                 <input type="text" class="form-control" name="rate" placeholder="Hourly rate" />
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" name="location" placeholder="Location" />
+                <input type="text" class="form-control" name="location" placeholder="Specific Location (i.e. ECE Room 204)" />
               </div>
               <div class="form-group">
                 <input type="file" accept="image/*" capture="camera">
@@ -373,6 +458,46 @@
           streetViewControl: false,
         })
 
+        // Create the DIV to hold the control and call the CustomControl() constructor passing in this DIV.
+        var customControlDiv = document.createElement('div');
+        var customControl = new CustomControl(customControlDiv, map);
+
+        customControlDiv.index = 1;
+        map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(customControlDiv);
+
+        function CustomControl(controlDiv, map) {
+         
+            // Set CSS for the control border.
+            var controlUI = document.createElement('div');
+            controlUI.style.backgroundColor = '#fff';
+            controlUI.style.border = '2px solid #fff';
+            controlUI.style.borderRadius = '3px';
+            controlUI.style.boxShadow = '0 2px 6px rgba(0,0,0,.3)';
+            controlUI.style.cursor = 'pointer';
+            controlUI.style.marginBottom = '22px';
+            controlUI.style.marginRight = '10px';
+            controlUI.style.textAlign = 'center';
+            controlUI.title = 'Click to recenter the map';
+            controlDiv.appendChild(controlUI);
+
+            // Set CSS for the control interior.
+            var controlText = document.createElement('div');
+            controlText.style.color = '#686868';
+            controlText.style.fontSize = '16px';
+            controlText.style.lineHeight = '24px';
+            controlText.style.paddingLeft = '4px';
+            controlText.style.paddingBottom = '0px';
+            controlText.style.paddingTop = '2px';
+            controlText.style.paddingRight = '4px';
+            controlText.innerHTML = '<span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>';
+            controlUI.appendChild(controlText);
+
+            // Setup the click event listeners to center the map
+            google.maps.event.addDomListener(controlUI, 'click', function () {
+                        user.location.update();
+            });
+        }
+
         // initialize user object
         user = {
           location:  {
@@ -461,7 +586,21 @@
                 $("#alertMessage").hide()
               }, 2000 )
             }, function(error) {
-              alert("Please use a valid university email address and/or password.") // error.message
+              // Handle Errors here.
+              var errorCode = error.code;
+              var errorMessage = error.message;
+              if (errorCode === 'auth/wrong-password') {
+                alert('Invalid password.  Please try again.');
+              } 
+              else if (errorCode === 'auth/user-not-found') {
+                alert('User email not found.');
+              } 
+              else if (errorCode === 'auth/invalid-email') {
+                alert('Invalide email address.  Please use a valid university email address.');
+              } 
+              else {
+                alert("Please use a valid university email address and/or password.") <!--error.message-->
+              }
               $btn.button('reset')
             } );
         })
