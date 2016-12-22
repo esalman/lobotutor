@@ -172,7 +172,6 @@
 
     <!-- Main settings 
     Profile Picture, Name, email, Password, Department-->
-
     <div class="modal fade" id="Settings" tabindex="-1" role="dialog" aria-labelledby="userSettingsLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -187,19 +186,38 @@
             </div>
 
             <br />
+
             <form>
               <div class="form-group">
-                <input type="text" class="form-control" name="name" placeholder="Name" />
+                <label for="deptInput">Name</label>
+                <input type="name" class="form-control" id="nameInput" name="name" placeholder="Name">
               </div>
+
               <div class="form-group">
-                <input type="text" class="form-control" name="email" placeholder="Email address" />
+                <label for="exampleInputEmail1">Email address</label>
+                <input type="email" class="form-control" name = "email" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                <small id="emailHelp" class="form-text text-muted">Your email address will be kept confidential.</small>
               </div>
+
               <div class="form-group">
-                <input type="text" class="form-control" name="password" placeholder="Password" />
+                <label for="exampleInputPassword1">Password</label>
+                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
               </div>
+
               <div class="form-group">
-                <input type="file" accept="image/*" capture="camera">
+                <label for="deptInput">Department</label>
+                <input type="dept" class="form-control" id="deptInput" name="dept" placeholder="Department">
               </div>
+ <!--              <div class="form-group">
+                <label for="exampleSelect1">Example select</label>
+                <select class="form-control" id="exampleSelect1">
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+              </div> -->
             </form>
           </div>
           <div class="modal-footer">
@@ -269,7 +287,7 @@
                 <input type="text" class="form-control" name="rate" placeholder="Hourly rate" />
               </div>
               <div class="form-group">
-                <input type="text" class="form-control" name="location" placeholder="Location" />
+                <input type="text" class="form-control" name="location" placeholder="Specific Location (i.e. ECE Room 204)" />
               </div>
               <div class="form-group">
                 <input type="file" accept="image/*" capture="camera">
