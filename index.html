@@ -205,7 +205,7 @@
           <div class="modal-footer">
             <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
+            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Logout</button>
           </div>
         </div>
       </div>
@@ -217,19 +217,25 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="studentSettingsLabel">My Profile</h4>
+            <h4 class="modal-title" id="studentSettingsLabel">Class Schedule </h4>
           </div>
           <div class="modal-body">
             <form id="studentSettingsForm">
               <div class="form-group">
-                <input type="text" class="form-control" name="subjects" placeholder="What are you interested in learning?" />
+                <input type="text" class="form-control" name="subjects" placeholder="h" />
               </div>
             </form>
           </div>
           <div class="modal-footer">
-            <button id="saveStudentSettings" type="button" class="btn btn-danger">Save changes</button>
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButton" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
+            <form class="form-inline">
+              <div class="form-group">
+                <label for="exampleInputEmail2">Class</label>
+                <input type="email" class="form-control" id="exampleInputEmail2" placeholder="ECE 500">
+              </div>
+              <button type="submit" class="btn btn-default">
+                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+              </button>
+            </form>
           </div>
         </div>
       </div>
@@ -468,7 +474,7 @@
             controlText.innerHTML = '<span class="glyphicon glyphicon-screenshot" aria-hidden="true"></span>';
             controlUI.appendChild(controlText);
 
-            // Setup the click event listeners
+            // Setup the click event listeners to center the map
             google.maps.event.addDomListener(controlUI, 'click', function () {
                         user.location.update();
             });
