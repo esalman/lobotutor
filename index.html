@@ -414,8 +414,11 @@
               })
               // load tutor profile on marker click
               google.maps.event.addListener(marker, 'click', function() {
-                $('#tutorProfileLabel').html( marker.uid )
-                $('#tutorProfile').modal('show')
+                firebase.database().ref('/profile/' + marker.uid ).once('value').then( function (snapshot) {
+                  tutor = snapshot.val()
+                  $('#tutorProfileLabel').html( tutor.name )
+                  $('#tutorProfile').modal('show')
+                } )
               })
             } )
           } )
@@ -452,7 +455,7 @@
             .then( function (u) {
               $btn.button('reset')
               $('#logInPage').modal('hide')
-              $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + u.displayName + "! </strong> You have successfully logged in.")
+              $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + profiles[firebase.auth().currentUser.uid].name + "! </strong> You have successfully logged in.")
               $("#alertMessage").show()
               setTimeout( function() {
                 $("#alertMessage").hide()
@@ -466,7 +469,7 @@
         // logout functionality
         $('#logOutButton, #logOutButton2').on('click', function () {
           var $btn = $(this).button('loading')
-          name = firebase.auth().currentUser.displayName
+          name = profiles[firebase.auth().currentUser.uid].name
           firebase.auth().signOut().then(function() {
             $("#alertMessage #alertMessageSpan").html("<strong>Goodbye " + name + "!</strong> You are now logged out.")
             $("#alertMessage").show()
@@ -496,17 +499,9 @@
               $btn.button('reset')
               $('#registerPage').modal('hide')
 
-              // update display name
-              firebase.auth().currentUser.updateProfile({
-                displayName: name
-              }).then(function() {
-                var displayName = user.displayName;
-              }, function(error) {
-                alert(error.message)
-              });
-
               // update profile information
               postData = {
+                name: name,
                 dept: dept
               }
               firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
@@ -544,8 +539,8 @@
             return false 
           }
           firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
-            var subjects = snapshot.val().tutor_settings;
-            $('#tutorSettings').find('input[name=subjects]').val(subjects)
+            $('#tutorSettings').find('input[name=name]').val(snapshot.val().name)
+            $('#tutorSettings').find('input[name=subjects]').val(snapshot.val().tutor_settings)
           });
           $('#tutorSettings').modal('show')
           return false
