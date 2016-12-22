@@ -221,9 +221,9 @@
             </form>
           </div>
           <div class="modal-footer">
-            <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
+            <button id="saveMainSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Logout</button>
+            <button id="logOutButtonMain" type="button" class="btn btn-default" data-dismiss="modal">Logout</button>
           </div>
         </div>
       </div>
@@ -303,7 +303,6 @@
           <div class="modal-footer">
             <button id="saveTutorSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButton2" type="button" class="btn btn-default" data-dismiss="modal">Sign out</button>
           </div>
         </div>
       </div>
@@ -606,7 +605,7 @@
         })
 
         // logout functionality
-        $('#logOutButton, #logOutButton2').on('click', function () {
+        $('logOutButtonMain').on('click', function () {
           var $btn = $(this).button('loading')
           name = profiles[firebase.auth().currentUser.uid].name
           firebase.auth().signOut().then(function() {
@@ -688,11 +687,13 @@
 
         // tutor setting save changes functionality
         $('#saveTutorSettings').on('click', function () {
+          console.log('here')
           var $btn = $(this).button('loading')
           postData = {
-            name: $('#tutorSettings').find('input[name=subjects]').val() ? $('#tutorSettings').find('input[name=name]').val() : '',
+            name: $('#tutorSettings').find('input[name=name]').val(),
             tutor_settings: $('#tutorSettings').find('input[name=subjects]').val()
           }
+          console.log(postData)
           firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
             $btn.button('reset')
             reloadProfiles()
