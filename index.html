@@ -229,7 +229,7 @@
       </div>
     </div>
 
-    <!-- Student Settings -->
+    <!-- Schedule -->
     <div class="modal fade" id="studentSettings" tabindex="-1" role="dialog" aria-labelledby="studentSettingsLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -239,9 +239,22 @@
           </div>
           <div class="modal-body">
             <form id="studentSettingsForm">
-              <div class="form-group">
-                <input type="text" class="form-control" name="subjects" placeholder="h" />
-              </div>
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Subject</th>
+                    <th>Course</th>
+                    <th>Title</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                    <td>@mdo</td>
+                  </tr>
+                </tbody>
+              </table>
             </form>
           </div>
           <div class="modal-footer">
@@ -410,7 +423,7 @@
     <footer class="footer">
       <div class="container">
         <ul class="nav nav-pills">
-          <li><a href="#student-profile" data-toggle="modal" data-target="#logInPage"><span class="glyphicon glyphicon-user" aria-hidden="true" title="Login"></span></a></li>
+          <li><a href="#student-profile" data-toggle="modal" data-target="#logInPage"><span class="glyphicon glyphicon-align-justify" aria-hidden="true" title="Class Schedule"></span></a></li>
           <li><a href="#tutor-profile"><span class="glyphicon glyphicon-education" aria-hidden="true" title="Become a tutor"></span></a></li>
           <li><a href="#" data-toggle="modal" data-target="#aboutPage"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" title="About"></span></a></li>
         </ul>
