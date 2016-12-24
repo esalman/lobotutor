@@ -249,9 +249,9 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                    <td>@mdo</td>
+                    <td>ECE</td>
+                    <td>500</td>
+                    <td>Linear Algebra</td>
                   </tr>
                 </tbody>
               </table>
@@ -263,9 +263,10 @@
                 <label for="exampleInputEmail2">Class</label>
                 <input type="email" class="form-control" id="exampleInputEmail2" placeholder="ECE 500">
               </div>
-              <button type="submit" class="btn btn-default">
+              <button type="submit" class="btn btn-danger">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </form>
           </div>
         </div>
@@ -337,6 +338,24 @@
         </div>
       </div>
     </div>    
+
+    <!-- Messages -->
+    <div class="modal fade" id="messagesPage" tabindex="-1" role="dialog" aria-labelledby="messagesPageLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="messagesPageLabel">Messages</h4>
+          </div>
+          <div class="modal-body">
+            <p>Fuck what are we doing.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
     <!-- About -->
     <div class="modal fade" id="aboutPage" tabindex="-1" role="dialog" aria-labelledby="aboutPageLabel">
@@ -425,6 +444,7 @@
         <ul class="nav nav-pills">
           <li><a href="#student-profile" data-toggle="modal" data-target="#logInPage"><span class="glyphicon glyphicon-align-justify" aria-hidden="true" title="Class Schedule"></span></a></li>
           <li><a href="#tutor-profile"><span class="glyphicon glyphicon-education" aria-hidden="true" title="Become a tutor"></span></a></li>
+          <li><a href="#" data-toggle="modal" data-target="#messagesPage"><span class="glyphicon glyphicon-comment" aria-hidden="true" title="Messages"></span></a></li>
           <li><a href="#" data-toggle="modal" data-target="#aboutPage"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" title="About"></span></a></li>
         </ul>
       </div>
