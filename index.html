@@ -132,6 +132,10 @@
         background-color:transparent;
       }
 
+      #one{
+        background-color: #c10037;
+      }
+
      </style>
   </head>
   <body>
@@ -275,29 +279,58 @@
             </div>
 
             <br />
+            <div class="text-center">
+              <div id="tutorRatings" class="btn-group btn-group-lg">
+                  <span class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:green"></span>
+                  <span class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:green"></span>
+                  <span class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:green"></span>
+                  <span class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:green"></span>
+                  <span class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:grey"></span>
+              </div>
+            </div>
+
+            <br />
+
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
-                <button id="tutorLocationUpdate" type="button" class="btn btn-danger" data-loading-text="updating...">Update location</button> <!--btn-warning-->
+                <button id="tutorLocationUpdate" type="button" class="btn btn-danger" data-loading-text="updating...">Update GPS Location</button> <!--btn-warning-->
               </div>
             </div>
 
             <br />
             <form>
-              <div class="form-group">
+<!--               <div class="form-group">
                 <input type="text" class="form-control" name="name" placeholder="Name" />
-              </div>
+              </div> -->
               <div class="form-group">
                 <input type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?" />
               </div>
-              <div class="form-group">
-                <input type="text" class="form-control" name="rate" placeholder="Hourly rate" />
+
+              <div class="form-group input-group">
+                <span class="input-group-addon">$</span>
+                <input type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Hourly rate">
+                <span class="input-group-addon">.00</span>
               </div>
+
+<!--               <div class="form-group">
+                <input type="text" class="form-control" name="rate" placeholder="Hourly rate" />
+              </div> -->
               <div class="form-group">
                 <input type="text" class="form-control" name="location" placeholder="Specific Location (i.e. ECE Room 204)" />
               </div>
-              <div class="form-group">
+<!--               <div class="form-group">
                 <input type="file" accept="image/*" capture="camera">
+              </div> -->
+
+              <div class="btn-group btn-group-justified" data-toggle="buttons">
+                <label class="btn btn-primary active btn-success glyphicon glyphicon-ok">
+                  <input type="radio" name="options" id="availableButton" autocomplete="off" checked> Available
+                </label>
+                <label class="btn btn-primary btn-danger glyphicon glyphicon-remove">
+                  <input type="radio" name="options" id="unavailableButton" autocomplete="off"> Unavailable
+                </label>
               </div>
+
             </form>
           </div>
           <div class="modal-footer">
@@ -717,8 +750,8 @@
             } );
           })
         })
-
       } )
+
 
     </script>
   </body>
