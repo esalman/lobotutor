@@ -149,15 +149,16 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
-
-          <button type="button" class="navbar-toggle collapsed" data-toggle="modal" data-target="#Settings" aria-expanded="false" aria-controls="navbar" aria-hidden="true">
-          <span class="glyphicon glyphicon-cog"</span>
-          </button>
+          <a href="#main-profile">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="modal"  aria-expanded="false" aria-controls="navbar" aria-hidden="true"><!-- data-target="#Settings" -->
+              <span class="glyphicon glyphicon-cog">
+            </button>
+          </a>
 
           <a class="navbar-brand" href="#"><span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a>
         </div>
         <div id="navbar" class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
+          <ul class="nav navbar-nav"><a href="#main-profile"></a>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -205,29 +206,24 @@
 
               <div class="form-group">
                 <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="Password">
+                <div class="input-group">
+                  <input type="password" class="form-control" name="password" id="exampleInputPassword1" placeholder="********">
+                    <span class="input-group-btn">
+                      <button class="btn btn-default" type="button">Update</button>
+                    </span>
+                  </div>
               </div>
-
               <div class="form-group">
                 <label for="deptInput">Department</label>
                 <input type="dept" class="form-control" id="deptInput" name="dept" placeholder="Department">
               </div>
- <!--              <div class="form-group">
-                <label for="exampleSelect1">Example select</label>
-                <select class="form-control" id="exampleSelect1">
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3</option>
-                  <option>4</option>
-                  <option>5</option>
-                </select>
-              </div> -->
             </form>
           </div>
+
           <div class="modal-footer">
             <button id="saveMainSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButtonMain" type="button" class="btn btn-default" data-dismiss="modal">Logout</button>
+            <button id="logOutButtonMain" type="button" class="btn btn-default" data-loading-text="Logging out..." data-dismiss="modal">Logout</button><!-- data-dismiss="modal" -->
           </div>
         </div>
       </div>
@@ -595,7 +591,7 @@
         // update location, does not need login
         user.location.update()
 
-        // load all tutor proofiles from firebase because eff firebase
+        // load all tutor profiles from firebase because eff firebase
         // then show on map
         profiles = {}
         var reloadProfiles = function () {
@@ -613,6 +609,7 @@
                 firebase.database().ref('/profile/' + marker.uid ).once('value').then( function (snapshot) {
                   tutor = snapshot.val()
                   $('#tutorProfileLabel').html( tutor.name )
+                  //$('#nameInput').html(tutor.name)
                   $('#tutorProfile').modal('show')
                   $('#tutorProfileSetAppointment').attr('data-tutor-uid', marker.uid)
                 } )
@@ -685,7 +682,8 @@
             $("#alertMessage #alertMessageSpan").html("<strong>Goodbye " + name + "!</strong> You are now logged out.")
             $("#alertMessage").show()
             $btn.button('reset')
-            $('#studentSettings').modal('hide')
+            // $('#studentSettings').modal('hide')
+            $('#Settings').modal('hide')
             setTimeout( function() {
                $("#alertMessage").hide()
             }, 2000 ) 
@@ -741,6 +739,24 @@
         // show tutor information
 
         // contact tutor - todo
+
+        //Settings Button
+        $('a[href="#main-profile"]').click( function() {
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
+            $('#Settings').find('input[name=name]').val(snapshot.val().name)
+            $('#Settings').find('input[name=dept]').val(snapshot.val().dept)
+            $('#Settings').find('input[name=email]').val(firebase.auth().currentUser.email)
+          });
+          $('#Settings').modal('show')
+          return false
+          // pre-populate form
+        } )
+
 
         // become a tutor button
         $('a[href="#tutor-profile"]').click( function() {
