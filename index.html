@@ -190,7 +190,7 @@
             <div class="form-group">
               <div class="btn-group btn-group-justified" >
                   <label type="button" class="btn glyphicon glyphicon-camera"> Upload
-                    <input type="file" accept="image/*" capture="camera" style="display: none;">
+                    <input id="photo" type="file" accept="image/*" capture="camera" style="display: none;">
                   </label> 
               </div>
             </div>
@@ -859,22 +859,84 @@
 
         // tutor setting save changes functionality
         $('#saveTutorSettings').on('click', function () {
-          console.log('here')
           var $btn = $(this).button('loading')
           postData = {
             // name: $('#tutorSettings').find('input[name=name]').val(),
             rate: $('#tutorSettings').find('input[name=rate]').val(),
             location: $('#tutorSettings').find('input[name=location]').val(),
             availability: $('#tutorSettings').find('input[name=options]:checked').val(),
-            tutor_settings: $('#tutorSettings').find('input[name=subjects]').val()
+            tutor_classes: $('#tutorSettings').find('input[name=subjects]').val()
           }
-          console.log(postData)
           firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
             $btn.button('reset')
             reloadProfiles()
           }, function (error) {
             alert(error.message)
           } );
+        })
+
+        // Save Main Settings
+        $('#saveMainSettings').on('click', function () {
+          var $btn = $(this).button('loading')
+          postData = {
+            name: $('#Settings').find('input[name=name]').val(),
+            dept: $('#Settings').find('input[name=dept]').val(),
+            email: $('#Settings').find('input[name=email]').val()
+          }
+          firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
+            $btn.button('reset')
+            reloadProfiles()
+          }, function (error) {
+            alert(error.message)
+          } );
+
+          //upload photo
+          var file = $('#photo').val()
+          var metadata = {
+            contentType: 'image/jpeg'
+          };
+
+          // Create a root reference
+          var storageRef = firebase.storage().ref();
+
+          // Upload file and metadata to the object 'images/mountains.jpg'
+          var uploadTask = storageRef.child('images/' + file.name).put(file, metadata);
+
+          // Listen for state changes, errors, and completion of the upload.
+          uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED, // or 'state_changed'
+            function(snapshot) {
+              // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+              var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+              console.log('Upload is ' + progress + '% done');
+              switch (snapshot.state) {
+                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                  console.log('Upload is paused');
+                  break;
+                case firebase.storage.TaskState.RUNNING: // or 'running'
+                  console.log('Upload is running');
+                  break;
+              }
+            }, function(error) {
+            // switch (error.code) {
+            //   case 'storage/unauthorized':
+            //     // User doesn't have permission to access the object
+            //     break;
+
+            //   case 'storage/canceled':
+            //     // User canceled the upload
+            //     break;
+
+            //   ...
+
+            //   case 'storage/unknown':
+            //     // Unknown error occurred, inspect error.serverResponse
+            //     break;
+            // }
+          }, function() {
+            // Upload completed successfully, now we can get the download URL
+            var downloadURL = uploadTask.snapshot.downloadURL;
+          });
+
         })
 
         // tutor location update
