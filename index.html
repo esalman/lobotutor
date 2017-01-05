@@ -261,7 +261,7 @@
                 <label for="exampleInputEmail2">Class</label>
                 <input class="form-control" id="addSchedule" name="classes" placeholder="Class">
               </div>
-              <button id ="addClass" type="submit" class="btn btn-danger">
+              <button id ="addClass" class="btn btn-danger">
                 <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
               </button>
               <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -808,30 +808,18 @@
         //add class to firebase
         // var classcount = 0;
         $('#addClass').on('click', function () {
-          //read class count
-          // firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
-          //   if (snapshot.val().class != null){
-          //     classcount = snapshot.val().class;
-          //   }
-          //   else {
-          //     classcount = 0;
-          //   }
-          //   classcount = classcount + 1;
-          //   });
-          // // alert(classcount)
-          // firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).update({
-          //   'class' : classcount
-          // })
+          console.log('A:')
           var PrevClass;
 
-          PrevClass = firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+          firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
             PrevClass = snapshot.val().CurrentClasses;
-          })
 
-          PrevClass = PrevClass + ',' + $('#studentSettings').find('input[name=classes]').val()
+            PrevClass = PrevClass + ',' + $('#studentSettings').find('input[name=classes]').val()
 
-          firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-            'CurrentClasses' :  PrevClass
+            firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+              'CurrentClasses' :  PrevClass
+            })
+
           })
         })
 
