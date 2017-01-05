@@ -256,16 +256,14 @@
             </form>
           </div>
           <div class="modal-footer">
-            <form class="form-inline">
-              <div class="form-group">
-                <label for="exampleInputEmail2">Class</label>
-                <input class="form-control" id="addSchedule" name="classes" placeholder="Class">
-              </div>
-              <button id ="addClass" class="btn btn-danger">
-                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-              </button>
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            </form>
+            <div class="form-group">
+              <label for="exampleInputEmail2">Class</label>
+              <input class="form-control" id="addSchedule" name="classes" placeholder="Class">
+            </div>
+            <button id ="addClass" class="btn btn-danger">
+              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+            </button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
         </div>
       </div>
@@ -809,13 +807,8 @@
         // var classcount = 0;
         $('#addClass').on('click', function () {
           console.log('A:')
-          var PrevClass;
-
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            PrevClass = snapshot.val().CurrentClasses;
-
-            PrevClass = PrevClass + ',' + $('#studentSettings').find('input[name=classes]').val()
-
+            PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#studentSettings').find('input[name=classes]').val();
             firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
               'CurrentClasses' :  PrevClass
             })
