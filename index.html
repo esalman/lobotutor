@@ -384,7 +384,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="tutorProfileLabel">Send Message</h4>
+            <h4 class="modal-title" id="tutorProfileLabel">Messaging with <span role='receiver-name'></span></h4>
           </div>
           <div class="modal-body">
             <form id='sendMessageForm' data-message-id='' data-receiver-uid=''>
@@ -628,14 +628,11 @@
               markers.push(marker)
               // load tutor profile on marker click
               google.maps.event.addListener(marker, 'click', function() {
-                firebase.database().ref('/profile/' + marker.uid ).once('value').then( function (snapshot) {
-                  tutor = snapshot.val()
-                  $('#tutorProfileLabel').html( tutor.name )
-                  //$('#nameInput').html(tutor.name)
-                  $('#tutorProfile').modal('show')
-                  $('#tutorProfileSetAppointment').attr('data-tutor-uid', marker.uid)
-                  $('#tutorProfileSendMessage').attr('data-tutor-uid', marker.uid)
-                } )
+                $('#tutorProfileLabel').html( profiles[marker.uid].name == undefined ? '<i>user</i>' : profiles[marker.uid].name )
+                $('#tutorProfile').modal('show')
+                $('#tutorProfileSetAppointment').attr('data-tutor-uid', marker.uid)
+                $('#tutorProfileSendMessage').attr('data-tutor-uid', marker.uid)
+                return true
               })
             } )
           } )
@@ -921,6 +918,7 @@
         $('#tutorProfileSendMessage').on('click', function () {
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-tutor-uid'))
           $('#tutorProfile').modal('hide')
+          $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-tutor-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-tutor-uid')].name )
           $('#sendMessageModal').modal('show')
         })
         $('#sendMessageForm button[type=submit]').on('click', function () {
@@ -946,6 +944,7 @@
           if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
             $('#previousMessage').text( snapshot.val().text )
             $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
+            $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
             $('#sendMessageModal').modal('show')
           }
         });
@@ -961,6 +960,7 @@
         $('#messagesPage').on('click', 'li', function () {
           $('#previousMessage').text( $(this).find('span[role=text]').text() )
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-sender-uid'))
+          $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#sendMessageModal').modal('show')
         })
 
