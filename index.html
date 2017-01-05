@@ -939,9 +939,9 @@
 
         // update messages
         firebase.database().ref('messages').on('child_added', function(snapshot) {
-          console.log(snapshot.val().text)
           if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
             $('#previousMessage').text( snapshot.val().text )
+            $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
             $('#sendMessageModal').modal('show')
           }
         });
