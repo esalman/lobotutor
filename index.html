@@ -243,20 +243,12 @@
           </div>
           <div class="modal-body">
             <form id="studentSettingsForm">
-              <table class="table table-striped">
-                <thead>
-                  <tr>
-                    <th>Subject</th>
-                    <th>Course</th>
-                    <th>Title</th>
-                  </tr>
-                </thead>
+              <table class="table table-bordered" id="tab_logic">
                 <tbody>
-                  <tr>
-                    <td>ECE</td>
-                    <td>500</td>
-                    <td>Linear Algebra</td>
+                  <tr id='ClassNumber0'>
+                    <td id="TableClasses"> </td>
                   </tr>
+                  <tr id='ClassNumber1'></tr>
                 </tbody>
               </table>
             </form>
@@ -665,10 +657,19 @@
             $('#logInPage').modal('show')
             return false 
           }
+          //Class Schedule Table setup
+          firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+            NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
+            ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
+            for (i = 0; i < NumberOfClasses; i++) {
+                $('#ClassNumber'+i).html("<td>"+ ClassesForSchedule[i] +"</td>");
+                $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');
+            }
+          })
+
           $('#studentSettings').modal('show')
           return false
           // pre-populate form
-
         } )
         
         // login functionality
@@ -890,13 +891,24 @@
         //add class to firebase
         // var classcount = 0;
         $('#addClass').on('click', function () {
-          console.log('A:')
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#studentSettings').find('input[name=classes]').val();
+            if ( ! snapshot.val() ) {
+              PrevClass = $('#studentSettings').find('input[name=classes]').val();
+            }
+            else {
+              PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#studentSettings').find('input[name=classes]').val();              
+            }
             firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
               'CurrentClasses' :  PrevClass
             })
-
+            //add class to table
+            NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
+            for (i = NumberOfClasses; i < NumberOfClasses + 1; i++) {
+              $('#ClassNumber'+ i ).html("<td>"+ $('#studentSettings').find('input[name=classes]').val() +"</td>");
+              $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');  
+            }
+            //set input field to empty tring
+            document.getElementById("addSchedule").value = "";
           })
         })
 
