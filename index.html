@@ -405,6 +405,7 @@
           <div class="modal-body">
             <form id='sendMessageForm' data-message-id='' data-receiver-uid=''>
               <div class="form-group">
+                <blockquote id='previousMessage'></blockquote>
                 <label for="message"></label>
                 <textarea name="message" class="form-control" placeholder="Type a short message here"></textarea>
               </div>
@@ -938,7 +939,11 @@
 
         // update messages
         firebase.database().ref('messages').on('child_added', function(snapshot) {
-          
+          console.log(snapshot.val().text)
+          if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
+            $('#previousMessage').text( snapshot.val().text )
+            $('#sendMessageModal').modal('show')
+          }
         });
 
         // course search typeahead
