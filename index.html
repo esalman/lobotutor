@@ -305,26 +305,16 @@
 
             <br />
             <form>
-
-     <!--          <div class="form-group">
-                <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?" />
-              </div> -->
-
-              <div class="form-group input-group">
-                <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?">
-                <div class="input-group-btn">
-                  <!-- Button and dropdown menu -->
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
-                    <ul class="dropdown-menu dropdown-menu-right">
-                      <li><a href="#">Action</a></li>
-                      <li><a href="#">Another action</a></li>
-                      <li><a href="#">Something else here</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="#">Separated link</a></li>
-                    </ul>
+              <div class="form-group">
+                <div class = "input-group">
+                  <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?">
+                  <div class="input-group-btn">
+                      <button id="addTutorClass" type="button" class="btn btn-default " aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus"></i></button> 
+                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                      <ul id="teachClassList" class="dropdown-menu dropdown-menu-right"></ul>
+                  </div>
                 </div>
               </div>
-
               <div class="form-group input-group">
                 <span class="input-group-addon">$</span>
                 <input name="rate" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Hourly rate">
@@ -724,7 +714,7 @@
                   $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:black")
                 } 
                 //load tutor class list
-                 $('#classList').empty();
+                $('#classList').empty();
                 $('<li class="list-group-item">' + (profiles[marker.uid].tutor_classes == null ? "" : profiles[marker.uid].tutor_classes) + '</li>').prependTo( $('#classList') )
                 return true
               })
@@ -1213,6 +1203,30 @@
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-sender-uid'))
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#sendMessageModal').modal('show')
+        })
+
+        //todo: WORKING HERE -JOE
+        $('#addTutorClass').on('click',function(){
+          if ($('#tutorSettings').find('input[name=subjects]').val() != ""){
+            $('<li class="list-group-item">' + ($('#tutorSettings').find('input[name=subjects]').val()) + '</li>').prependTo( $('#teachClassList') )
+            $('#teachClass').val("")
+
+            firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+            
+              if ( ! snapshot.val() ) {
+                PrevClass = $('#tutorSettings').find('input[name=classes]').val();
+              }
+              else {
+                PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#tutorstudentSettings').find('input[name=classes]').val();              
+              }
+              firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                'tutor_classes' :  PrevClass
+              })
+            })
+          }
+          else { 
+            return false
+          }
         })
 
 
