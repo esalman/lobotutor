@@ -304,8 +304,23 @@
             <br />
             <form>
 
-              <div class="form-group">
+     <!--          <div class="form-group">
                 <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?" />
+              </div> -->
+
+              <div class="form-group input-group">
+                <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?">
+                <div class="input-group-btn">
+                  <!-- Button and dropdown menu -->
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Action <span class="caret"></span></button>
+                    <ul class="dropdown-menu dropdown-menu-right">
+                      <li><a href="#">Action</a></li>
+                      <li><a href="#">Another action</a></li>
+                      <li><a href="#">Something else here</a></li>
+                      <li role="separator" class="divider"></li>
+                      <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
               </div>
 
               <div class="form-group input-group">
@@ -336,6 +351,7 @@
     </div>
 
     <!-- tutor profile on map -->
+    <!-- todo: profile pic, rating, courses -->
     <div class="modal fade" id="tutorProfile" tabindex="-1" role="dialog" aria-labelledby="tutorProfileLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -344,6 +360,25 @@
             <h4 class="modal-title" id="tutorProfileLabel">Tutor name</h4>
           </div>
           <div class="modal-body">
+
+
+            <div class="text-center">
+              <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+            </div>
+
+            <br />
+            <div class="text-center">
+              <div id="tutorUserRatings" data-tutor-uid=""name="ratingVal" class="btn-group btn-group-lg" data-value="4">
+                  <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                  <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                  <span name = "star3" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                  <span name = "star4" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                  <span name = "star5" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:grey"></span>
+              </div>
+            </div>
+
+            <br/>
+
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
                 <button id="tutorProfileSetAppointment" type="button" class="btn btn-success" data-loading-text="loading..." data-tutor-uid="">Set an appointment</button> <!--btn-warning-->
@@ -353,6 +388,10 @@
               </div>
             </div>
           </div>
+
+          <!-- list courses -->
+          <ul id="classList" class="list-group text-center"></ul>
+
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
           </div>
@@ -361,7 +400,7 @@
     </div>    
 
     <!-- Messages -->
-    <div class="modal fade" id="messagesPage" tabindex="-1" role="dialog" aria-labelledby="messagesPageLabel">
+    <div class="modal fade" id="messagesPage" tabindex="-1" role="dialog" aria-labelledby="messagesPageLabel" data-photo="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -378,7 +417,8 @@
       </div>
     </div>
 
-    <!-- send receive message -->
+    <!-- Send and receive message -->
+    <!-- todo: show user's profile photo -->
     <div class="modal fade" id="sendMessageModal" tabindex="-1" role="dialog" aria-labelledby="sendMessageModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -389,10 +429,17 @@
           <div class="modal-body">
             <form id='sendMessageForm' data-message-id='' data-receiver-uid=''>
               <div class="form-group">
-                <blockquote id='previousMessage'></blockquote>
-                <label for="message"></label>
+                <div class = "row"> 
+                  <div class="col-xs-2"> 
+                    <img id="messagePhoto" class="img-circle" style="max-height: 40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
+                  </div> 
+                  <div class="col-xs-10">
+                    <blockquote id='previousMessage' display='block'></blockquote>
+                    <label for="message"></label>
+                  </div>
+                </div>
                 <textarea name="message" class="form-control" placeholder="Type a short message here"></textarea>
-              </div>
+                </div>
               <button type="submit" class="btn btn-success">Send</button>
             </form>
           </div>
@@ -632,6 +679,51 @@
                 $('#tutorProfile').modal('show')
                 $('#tutorProfileSetAppointment').attr('data-tutor-uid', marker.uid)
                 $('#tutorProfileSendMessage').attr('data-tutor-uid', marker.uid)
+                $('#tutorUserPhoto').attr('src', profiles[marker.uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[marker.uid].photo )
+                //load rating
+                //change color of stars based off of ratingVal value
+                if (profiles[marker.uid].rating == 1){
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")
+                }
+                else if (profiles[marker.uid].rating == 2){
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
+                else if (profiles[marker.uid].rating == 3){
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
+                else if (profiles[marker.uid].rating == 4){
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }      
+                else if (profiles[marker.uid].rating == 5){
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:gold")
+                } 
+                else {
+                  $('#tutorUserRatings').find('[name=star1]').attr("style","font-size:1.5em; color:black")
+                  $('#tutorUserRatings').find('[name=star2]').attr("style","font-size:1.5em; color:black")
+                  $('#tutorUserRatings').find('[name=star3]').attr("style","font-size:1.5em; color:black")
+                  $('#tutorUserRatings').find('[name=star4]').attr("style","font-size:1.5em; color:black")
+                  $('#tutorUserRatings').find('[name=star5]').attr("style","font-size:1.5em; color:black")
+                } 
+                //load tutor class list
+                 $('#classList').empty();
+                $('<li class="list-group-item">' + (profiles[marker.uid].tutor_classes == null ? "" : profiles[marker.uid].tutor_classes) + '</li>').prependTo( $('#classList') )
                 return true
               })
             } )
@@ -985,21 +1077,31 @@
 
         })
 
-        // send message
+        // Send message modal
         $('#tutorProfileSendMessage').on('click', function () {
+          //todo:update #previousMessage.text to empty
+          $('#previousMessage').text( "" )
+          $('#sendMessageForm textarea[name=message]').attr('val',"")
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-tutor-uid'))
           $('#tutorProfile').modal('hide')
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-tutor-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-tutor-uid')].name )
+          //todo: need to make database public for all users so users can see everyones profile photos
+          $('#messagePhoto').attr('src', profiles[$(this).attr('data-tutor-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-tutor-uid')].photo )
           $('#sendMessageModal').modal('show')
         })
+
+        // Send Message submit
         $('#sendMessageForm button[type=submit]').on('click', function () {
           if ( $('#sendMessageForm textarea[name=message]').val() == '' ) return false
           var $btn = $(this).button('loading')
           var newMessageId = firebase.database().ref().child('messages').push().key;
+          var time_now = new Date($.now());
+          console.log(time_now)
           firebase.database().ref('messages/'+newMessageId).set({
             text: $('#sendMessageForm textarea[name=message]').val(),
             receiver_uid: $('#sendMessageForm').attr('data-receiver-uid'),
-            sender_uid: firebase.auth().currentUser.uid
+            sender_uid: firebase.auth().currentUser.uid,
+            time_stamp: time_now
           }).then( function () {
             $btn.button('reset')
             $('#sendMessageModal').modal('hide')
@@ -1016,6 +1118,7 @@
             $('#previousMessage').text( snapshot.val().text )
             $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
             $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
+            $('#messagePhoto').attr('src', profiles[snapshot.val().sender_uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[snapshot.val().sender_uid].photo )
             $('#sendMessageModal').modal('show')
           }
         });
@@ -1034,10 +1137,18 @@
         // })
 
         //open message list (messaging style)
-        $('#messagesPage').on('shown.bs.modal', function () {
-
+        $('a[href="#open-message-list" ]').click( function() {
+        // $('#messagesPage').on('shown.bs.modal', function () {
+          $('#messageList').empty();
           firebase.database().ref('messages').orderByChild('receiver_uid').equalTo(firebase.auth().currentUser.uid).on('child_added', function(snapshot) {
-            $('<li class="list-group-item" data-sender-uid="' + snapshot.val().sender_uid + '"><div class = "row"> <div class="col-xs-3"> <img id="tutorPhoto" class="img-circle" style="max-height: 40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> </div> <div class="col-xs-6"> <h4 class="text-danger list-group-item-heading text-left"" role="name">' + profiles[snapshot.val().sender_uid].name + '</h4> <p class="list-group-item-text text-left" role="text">' + snapshot.val().text + '</p></div> <div class="col-xs-3"> <label class="btn glyphicon glyphicon-chevron-right"/></div></div></li>').prependTo( $('#messageList') )
+            //todo: only display most recent message from users
+            //get sender_uid's photo from database
+            firebase.database().ref("/profile/" + snapshot.val().sender_uid).once("value").then(function(snapshot2) {
+              if (snapshot2.val().photo != undefined) { $('#messagesPage').attr('data-photo', snapshot2.val().photo)}
+              else { $('#messagesPage').attr('data-photo', "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3")}
+
+              $('<li class="list-group-item" data-sender-uid="' + snapshot.val().sender_uid + '"><div class = "row"> <div class="col-xs-2"> <img id="tutorPhoto" class="img-circle" style="max-height: 40px;" src="'+ $('#messagesPage').attr("data-photo") +'"/> </div> <div class="col-xs-8"> <h4 class="text-danger list-group-item-heading text-left"" role="name">' + profiles[snapshot.val().sender_uid].name + '</h4> <p class="list-group-item-text text-left" role="text">' + snapshot.val().text + '</p></div> <div class="col-xs-2"> <label class="btn glyphicon glyphicon-chevron-right"/></div></div></li>').prependTo( $('#messageList') )
+            });
           });
         })
 
