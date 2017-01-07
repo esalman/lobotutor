@@ -692,7 +692,7 @@
 
           // Setup the click event listeners to center the map
           google.maps.event.addDomListener(controlUI, 'click', function () {
-                      user.location.update();
+            centerGPSLocation()
           });
         }
 
@@ -828,6 +828,24 @@
           })
         }
 
+        function centerGPSLocation() {
+          // get user's location
+          navigator.geolocation.getCurrentPosition(function(position) {
+            // center the map
+            map.setCenter( new google.maps.LatLng(position.coords.latitude, position.coords.longitude) )
+            // put a marker at user's location
+            // var marker = new google.maps.Marker({
+            //   position: user.location.latlng,
+            //   map:map
+            // })
+          }, function (error) {
+            // center the map at UNM
+            map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
+          })
+        } 
+
+        // initializations 
+
         // Initialize Firebase
         var config = {
           apiKey: "AIzaSyB7NvzRR35IhafEfpimyJ94e7vpK1rKD2c",
@@ -859,31 +877,9 @@
         customControlDiv.index = 1;
         map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(customControlDiv);
 
-        // initialize user object
-        user = {
-          location:  {
-            latlng: null,
-            update: function () {
-              // get user's location
-              navigator.geolocation.getCurrentPosition(function(position) {
-                // get latlng
-                user.location.latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-                // center the map
-                map.setCenter(user.location.latlng)
-                // put a marker at user's location
-                // var marker = new google.maps.Marker({
-                //   position: user.location.latlng,
-                //   map:map
-                // })
-              }, function (error) {
-                // center the map at UNM
-                map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
-              })
-            }
-          }
-        }
         // update location, does not need login
-        user.location.update()
+        // centerGPSLocation()
+        map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
 
         // load all tutor profiles from firebase because eff firebase
         // then show on map
