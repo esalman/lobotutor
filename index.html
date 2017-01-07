@@ -148,6 +148,21 @@
         font-size: medium;
       }
 
+/*      .glyphicon.spinning {
+          animation: spin 1s infinite linear;
+          -webkit-animation: spin2 1s infinite linear;
+      }
+
+      @keyframes spin {
+          from { transform: scale(1) rotate(0deg); }
+          to { transform: scale(1) rotate(360deg); }
+      }
+
+      @-webkit-keyframes spin2 {
+          from { -webkit-transform: rotate(0deg); }
+          to { -webkit-transform: rotate(360deg); }
+      }*/
+
      </style>
   </head>
   <body>
@@ -308,7 +323,7 @@
             </div> -->
 
             <!-- <br /> -->
-            <div class="text-center">
+            <div class="text-center" style="margin-top:10px">
               <div id="tutorRatings" name="ratingVal" class="btn-group btn-group-lg" data-value="4">
                   <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
                   <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
@@ -339,9 +354,9 @@
                 </div>
               </div>
               <div class="form-group input-group">
-                <span class="input-group-addon">$</span>
+                <span class="input-group-addon" style="background-color: rgb(255, 255, 255);">$</span>
                 <input name="rate" type="text" class="form-control" aria-label="Amount (to the nearest dollar)" placeholder="Hourly rate">
-                <span class="input-group-addon">.00</span>
+                <!-- <span class="input-group-addon" style="background-color: rgb(255, 255, 255);">.00</span> -->
               </div>
               <div class="form-group">
                 <input type="text" class="form-control" name="location" placeholder="Specific Location (i.e. ECE Room 204)" />
@@ -373,6 +388,7 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="tutorProfileLabel">Tutor name</h4>
+            <!-- <h6 class="text-left" style="margin-left = 5px">Available</h6> -->
           </div>
           <div class="modal-body">
 
@@ -381,8 +397,8 @@
               <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
-            <br />
-            <div class="text-center">
+            <!-- <br /> -->
+            <div class="text-center" style="margin-top:10px">
               <div id="tutorUserRatings" data-tutor-uid=""name="ratingVal" class="btn-group btn-group-lg" data-value="4">
                   <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
                   <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
@@ -640,8 +656,15 @@
         }
 
         function addTutorToMap(uid) {
+          if(profiles[uid].availability == 1){
+            var icon_image ="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblue_icon.png?alt=media&token=31ab0ba2-fe9c-448c-9a31-af23987081dc"
+          }
+          else {
+            var icon_image = "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fred_icon.png?alt=media&token=07355d88-8ae5-4993-b0b5-75b449f832a4"
+          }
           var marker = new google.maps.Marker({
             position: new google.maps.LatLng(profiles[uid].lat, profiles[uid].lng),
+            icon: icon_image,
             map: map,
             uid: uid
           })
@@ -649,18 +672,23 @@
 
           // load tutor profile on marker click
           google.maps.event.addListener(marker, 'click', function () {
-            $('#tutorProfileLabel').html( profiles[uid].name == undefined ? '<i>user</i>' : profiles[uid].name )
+            if(profiles[uid].availability == 1){
+              var availability_text = "    (Available)"
+            }
+            else{
+              var availability_text = "    (Unavailable)"
+            }
+            $('#tutorProfileLabel').html( profiles[uid].name == undefined ? '<i>user</i>' : (profiles[uid].name + availability_text) )
             $('#tutorProfile').modal('show')
             $('#tutorProfileSetAppointment').attr('data-tutor-uid', uid)
             $('#tutorProfileSendMessage').attr('data-tutor-uid', uid)
-            $('#tutorUserPhoto').attr('src', profiles[uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[uid].photo )
+            $('#tutorUserPhoto').attr('src', profiles[uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[uid].photo )
             //load rate
-            // id=" 
             if(profiles[uid].rate!=null){
               $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
             }
             else{
-              $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
+              $('#tutorsRate').text("Hourly Rate: $00" )
             }
             //load rating
             //change color of stars based off of ratingVal value
@@ -1069,6 +1097,7 @@
           }, function (error) {
             alert(error.message)
           } );
+          $('#tutorSettings').modal('hide')
         })
 
         // Save Main Settings
