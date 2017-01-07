@@ -469,6 +469,27 @@
       </div>
     </div> 
 
+    <!-- appointment set tutor -->
+    <div class="modal fade" id="appointmentTutorModal" tabindex="-1" role="dialog" aria-labelledby="appointmentTutorModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="appointmentTutorModalLabel">New appointment request from <span role='student-name'></span></h4>
+          </div>
+          <div class="modal-body">
+            <div id="appointmentTutorAction" class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-success" role="accept" data-appointment-id=''>Accept</button>
+              <button type="button" class="btn btn-danger" role="reject" data-appointment-id=''>Reject</button>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div> 
+
     <!-- About -->
     <div class="modal fade" id="aboutPage" tabindex="-1" role="dialog" aria-labelledby="aboutPageLabel">
       <div class="modal-dialog" role="document">
@@ -779,12 +800,11 @@
         
         /* events */
 
-        // profile update listener
-        firebase.database().ref('profile/').on('child_changed', function() {
-          console.log('changed')
+        // common modal close event- reload profile
+        $('div.modal').on('hidden.bs.modal', function (e) {
           reloadProfiles()
-        });
-        
+        })
+
         // profile button functionality
         $('a[href="#student-profile"]').click( function() {
           // check login
@@ -826,7 +846,6 @@
               $('#logInPage').modal('hide')
               $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + profiles[firebase.auth().currentUser.uid].name + "! </strong> You have successfully logged in.")
               $("#alertMessage").show()
-              reloadProfiles()
               setTimeout( function() {
                 $("#alertMessage").hide()
               }, 2000 )
@@ -863,7 +882,6 @@
             setTimeout( function() {
                $("#alertMessage").hide()
             }, 2000 ) 
-            reloadProfiles()
           }, function(error) {
             alert(error.message)
             $btn.button('reset')
@@ -1110,8 +1128,7 @@
 
             });
           }
-          $('#Settings').modal('hide')
-          reloadProfiles()
+         $('#Settings').modal('hide')
         })
 
         // tutor location update
@@ -1203,7 +1220,72 @@
 
         // set appointment
         $('#tutorProfileSetAppointment').on('click', function () {
+          var $btn = $(this).button('loading')
+          var newAppointmentId = firebase.database().ref().child('appointments').push().key;
+          firebase.database().ref('appointments/'+newAppointmentId).set({
+            tutor_uid: $('#sendMessageForm').attr('data-receiver-uid'),
+            student_uid: firebase.auth().currentUser.uid,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            accept: 0 // 0 = pending, 1 = accepted, -1 = rejected
+          }).then( function () {
+            $btn.button('reset')
+            alert('Request sent.')
+            $('#tutorProfile').modal('hide')
+          }, function (error) {
+            alert(error.message)
+          } );
+        })
 
+        // listen for new appointments added 
+        firebase.database().ref('appointments').on('child_added', function(snapshot, key) {
+          if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
+            $('#appointmentTutorAction button').attr('data-appointment-id', key)
+            $('#appointmentTutorModal').modal('show')
+          }
+        })
+
+        // listen for appointments status change 
+        firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
+          if ( snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
+            if ( snapshot.val().accept == 1 ) {
+              alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+            }
+            else if ( snapshot.val().accept == -1 ) {
+              alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+            }
+          }
+        })
+
+        // appointments accept/reject tutor
+        $('#appointmentTutorAction button[role=accept]').on('click', function () {
+          var $btn = $(this).button('loading')
+          key = $(this).attr('data-appointment-id')
+          res = confirm('Are you sure?')
+          if ( res ) {
+            firebase.database().ref('appointments/'+key).update({
+              accept: 1
+            }).then( function () {
+              $btn.button('reset')
+              $('#appointmentTutorModal').modal('hide')
+            }, function (error) {
+              alert(error.message)
+            } )
+          }
+        })
+        $('#appointmentTutorAction button[role=reject]').on('click', function () {
+          var $btn = $(this).button('loading')
+          key = $(this).attr('data-appointment-id')
+          res = confirm('Are you sure?')
+          if ( res ) {
+            firebase.database().ref('appointments/'+key).update({
+              accept: -1
+            }).then( function () {
+              $btn.button('reset')
+              $('#appointmentTutorModal').modal('hide')
+            }, function (error) {
+              alert(error.message)
+            } )
+          }
         })
 
         // Send message modal
@@ -1217,7 +1299,6 @@
           //todo: need to make database public for all users so users can see everyones profile photos
           $('#messagePhoto').attr('src', profiles[$(this).attr('data-tutor-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-tutor-uid')].photo )
           $('#sendMessageModal').modal('show')
-          reloadProfiles()
         })
 
         // Send Message submit
@@ -1225,21 +1306,17 @@
           if ( $('#sendMessageForm textarea[name=message]').val() == '' ) return false
           var $btn = $(this).button('loading')
           var newMessageId = firebase.database().ref().child('messages').push().key;
-          var time_now = new Date($.now());
-          console.log(time_now)
           firebase.database().ref('messages/'+newMessageId).set({
             text: $('#sendMessageForm textarea[name=message]').val(),
             receiver_uid: $('#sendMessageForm').attr('data-receiver-uid'),
             sender_uid: firebase.auth().currentUser.uid,
-            time_stamp: time_now
+            timestamp: firebase.database.ServerValue.TIMESTAMP
           }).then( function () {
             $btn.button('reset')
             $('#sendMessageModal').modal('hide')
-            reloadProfiles()
           }, function (error) {
-            console.log('B:')
             alert(error.message)
-          } );
+          } )
           return false
         })
 
@@ -1291,7 +1368,6 @@
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#messagesPage').modal('hide')
           $('#sendMessageModal').modal('show')
-          reloadProfiles()
         })
 
 
