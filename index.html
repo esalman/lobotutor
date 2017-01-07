@@ -177,12 +177,11 @@
             <span class="icon-bar"></span>
           </button> -->
 
-            <button class="btn btn-lg btn-warning">
-              <span class="glyphicon glyphicon-refresh spinning"></span>    
-            </button>
+             <!--  <span class="glyphicon glyphicon-refresh spinning" style="background-color: #c10037;font-size: 20px;"></span> -->
         
           <a href="#main-profile">
             <button type="button" class="navbar-toggle collapsed" data-toggle="modal"  aria-expanded="false" aria-controls="navbar" aria-hidden="true"><!-- data-target="#Settings" -->
+              
               <span class="glyphicon glyphicon-cog">
             </button>
           </a>
@@ -209,6 +208,15 @@
       </button>
       <span id="alertMessageSpan"> <strong>Well done!</strong> You have successfully logged in.</span>
     </div>
+
+   <!--   <div id="alertMessage2" class="alert alert-success fade in" role="alert" style="display:show">
+    <span class="glyphicon glyphicon-refresh spinning" style="background-color: none;font-size: 20px;"></span>
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <span id="alertMessageSpan"> Loading user data...</span>
+    </div> -->
+
 
 
 
@@ -267,7 +275,7 @@
           <div class="modal-footer">
             <button id="saveMainSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <button id="logOutButtonMain" type="button" class="btn btn-default" data-loading-text="Logging out..." data-dismiss="modal">Logout</button><!-- data-dismiss="modal" -->
+            <button id="logOutButtonMain" type="button" class="btn btn-default" data-loading-text="Logging out..." >Logout</button><!-- data-dismiss="modal" -->
           </div>
         </div>
       </div>
@@ -917,6 +925,7 @@
 
         // logout functionality
         $('logOutButtonMain').on('click', function () {
+          console.log("here")
           var $btn = $(this).button('loading')
           name = profiles[firebase.auth().currentUser.uid].name
           firebase.auth().signOut().then(function() {
