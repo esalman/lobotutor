@@ -1320,7 +1320,7 @@
 
         // listen for appointments status change 
         firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
-          if ( snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
+          if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
             if ( snapshot.val().accept == 1 ) {
               alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
             }
