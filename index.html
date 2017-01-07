@@ -163,6 +163,21 @@
           to { -webkit-transform: rotate(360deg); }
       }
 
+      #messageNavBar ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          width: 25%;
+          background-color: #f1f1f1;
+          height: 100%; /* Full height */
+          position: fixed; /* Make it stick, even on scroll */
+          overflow: auto; /* Enable scrolling if the sidenav has too much content */
+      }
+
+      #messageNavBar li {
+          display: inline;
+      }
+
      </style>
   </head>
   <body>
@@ -462,9 +477,24 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="messagesPageLabel">Recent Messages</h4>
+                        <!-- Navbar -->
           </div>
           <div class="modal-body">
-            <ul id="messageList" class="list-group"></ul>
+            <div class="bs-example bs-example-tabs" data-example-id="togglable-tabs"> 
+              <ul class="nav nav-tabs" id="myTabs" role="tablist"> 
+                <li role="presentation" class="active"><a href="#home" id="home-tab" role="tab" data-toggle="tab" aria-controls="home" aria-expanded="true">Messages</a></li> 
+                <li role="presentation"><a href="#profile" role="tab" id="profile-tab" data-toggle="tab" aria-controls="profile">Appointments</a></li> 
+              </ul> 
+              <div class="tab-content" id="myTabContent"> 
+                <div class="tab-pane fade in active" role="tabpanel" id="home" aria-labelledby="home-tab"> 
+                     <ul id="messageList" class="list-group"></ul>
+                </div> 
+                <div class="tab-pane fade" role="tabpanel" id="dropdown1" aria-labelledby="dropdown1-tab"> 
+                  <p>Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro fanny pack lo-fi farm-to-table readymade. Messenger bag gentrify pitchfork tattooed craft beer, iphone skateboard locavore carles etsy salvia banksy hoodie helvetica. DIY synth PBR banksy irony. Leggings gentrify squid 8-bit cred pitchfork. Williamsburg banh mi whatever gluten-free, carles pitchfork biodiesel fixie etsy retro mlkshk vice blog. Scenester cred you probably haven't heard of them, vinyl craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                  </p> 
+                </div> 
+              </div> 
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -540,7 +570,8 @@
             <h4 class="modal-title" id="aboutPageLabel">About</h4>
           </div>
           <div class="modal-body">
-            <p>LoboTutor is an app which builds a network between student tutors and students that like to learn. It provides a easy interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific subjects. When a fitting tutor is found on the interactive map an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which he wants to teach. He isable to show his availability. On his profile he can set a hourly rate. </p>
+            <p>LoboTutor is a new app which builds a network between student tutors and students that like to learn. It provides an easy and intuitive interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific courses and subjects. When a fitting tutor is found on the interactive map, an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. </p>
+            <p>Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which they would like to teach. They are able to show their availability and set a hourly rate. </p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -1477,7 +1508,7 @@
         })
 
         // send message from message list
-        $('#messagesPage').on('click', 'li', function () {
+        $('#messagesList').on('click', 'li', function () {
           $('#sendMessageForm textarea[name=message]').val('')
           $('#previousMessage').text( $(this).find('p[role=text]').text() )
           $('#messagePhoto').attr('src', profiles[$(this).attr('data-sender-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-sender-uid')].photo )
@@ -1485,6 +1516,11 @@
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#messagesPage').modal('hide')
           $('#sendMessageModal').modal('show')
+        })
+
+        $('#myTabs a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
         })
 
         // course search typeahead
