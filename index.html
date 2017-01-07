@@ -302,7 +302,15 @@
               <img id="tutorPhoto" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
-            <br />
+  <!--           <div class="form-group">
+              <div class="btn-group btn-group-justified" >
+                  <label type="button" class="btn glyphicon glyphicon-camera"> Upload
+                    <input id="photo" type="file" accept="image/*" capture="camera" style="display: none;">
+                  </label> 
+              </div>
+            </div> -->
+
+            <!-- <br /> -->
             <div class="text-center">
               <div id="tutorRatings" name="ratingVal" class="btn-group btn-group-lg" data-value="4">
                   <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
@@ -325,7 +333,7 @@
             <form>
               <div class="form-group">
                 <div class = "input-group">
-                  <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?">
+                  <input id="teachClass" type="text" class="form-control" autocomplete="off" name="subjects" placeholder="What are you interested in teaching?">
                   <div class="input-group-btn">
                       <button id="addTutorClass" type="button" class="btn btn-default " aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus"></i></button> 
                       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
@@ -388,11 +396,9 @@
             </div>
 
             <!-- <br/> -->
-
             <div class="text-center">
-              <h4>Hourly Rate: $15</h4>
+              <h4 id="tutorsRate" >Hourly Rate: $15</h4>
             </div>
-
 
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
@@ -630,6 +636,14 @@
             $('#tutorProfileSetAppointment').attr('data-tutor-uid', uid)
             $('#tutorProfileSendMessage').attr('data-tutor-uid', uid)
             $('#tutorUserPhoto').attr('src', profiles[uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[uid].photo )
+            //load rate
+            // id=" 
+            if(profiles[uid].rate!=null){
+              $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
+            }
+            else{
+              $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
+            }
             //load rating
             //change color of stars based off of ratingVal value
             if (profiles[uid].rating == 1){
