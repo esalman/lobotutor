@@ -373,7 +373,12 @@
               </div>
             </div>
 
-            <br/>
+            <!-- <br/> -->
+
+            <div class="text-center">
+              <h4>Hourly Rate: $15</h4>
+            </div>
+
 
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
@@ -386,6 +391,10 @@
           </div>
 
           <!-- list courses -->
+          <div class="text-center">
+            <h4>Courses</h4>
+          </div>
+
           <ul id="classList" class="list-group text-center"></ul>
 
           <div class="modal-footer">
@@ -676,6 +685,8 @@
                 $('#tutorProfileSetAppointment').attr('data-tutor-uid', marker.uid)
                 $('#tutorProfileSendMessage').attr('data-tutor-uid', marker.uid)
                 $('#tutorUserPhoto').attr('src', profiles[marker.uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[marker.uid].photo )
+                //load hourly rate:
+
                 //load rating
                 //change color of stars based off of ratingVal value
                 if (profiles[marker.uid].rating == 1){
@@ -719,7 +730,13 @@
                 } 
                 //load tutor class list
                 $('#classList').empty();
-                $('<li class="list-group-item">' + (profiles[marker.uid].tutor_classes == null ? "" : profiles[marker.uid].tutor_classes) + '</li>').prependTo( $('#classList') )
+                if(profiles[marker.uid].tutor_classes != null){
+                  var loadedTutorClasses = profiles[marker.uid].tutor_classes.split(',')
+                  //add to list
+                  for(i = 0; i < loadedTutorClasses.length; i++){
+                    $('<li class="list-group-item">' + (loadedTutorClasses[i]) + '</li>').prependTo( $('#classList') )
+                  }
+                }
                 return true
               })
             } )
@@ -937,6 +954,7 @@
               $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:black")
               $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:black")
             } 
+            $('#teachClassList').empty();
             if (snapshot.val().tutor_classes != null){
               var loadedTutorClasses = snapshot.val().tutor_classes.split(',')
               //add to list
