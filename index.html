@@ -232,7 +232,7 @@
           <div class="modal-body">
 
             <div class="text-center">
-              <img id="mainPhoto" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="mainPhoto" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
             <div class="form-group">
@@ -326,7 +326,7 @@
           <div class="modal-body">
 
             <div class="text-center">
-              <img id="tutorPhoto" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="tutorPhoto" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
   <!--           <div class="form-group">
@@ -409,7 +409,7 @@
 
 
             <div class="text-center">
-              <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
             <!-- <br /> -->
@@ -484,7 +484,7 @@
               <div class="form-group">
                 <div class = "row"> 
                   <div class="col-xs-2"> 
-                    <img id="messagePhoto" class="img-circle" style="max-height: 40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
+                    <img id="messagePhoto" class="img-circle" style="max-height: 40px; min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
                   </div> 
                   <div class="col-xs-10">
                     <blockquote id='previousMessage' display='block'></blockquote>
@@ -611,7 +611,7 @@
         <ul class="nav nav-pills">
           <li><a href="#student-profile" data-toggle="modal" data-target="#logInPage"><span class="glyphicon glyphicon-align-justify" aria-hidden="true" title="Class Schedule"></span></a></li>
           <li><a href="#tutor-profile"><span class="glyphicon glyphicon-education" aria-hidden="true" title="Become a tutor"></span></a></li>
-          <li><a href="#open-message-list" data-toggle="modal" data-target="#messagesPage"><span class="glyphicon glyphicon-comment" aria-hidden="true" title="Messages"></span></a></li>
+          <li><a href="#open-message-list" data-toggle="modal" data-target="#messagesPage"><span class="glyphicon glyphicon-comment" aria-hidden="true" title="Messages"></span><span id="messageBadge" class="badge" style="margin-bottom:10px; display:none">NEW</span></a></li>
           <li><a href="#" data-toggle="modal" data-target="#aboutPage"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" title="About"></span></a></li>
         </ul>
       </div>
@@ -1383,14 +1383,12 @@
 
         // Send message modal
         $('#tutorProfileSendMessage').on('click', function () {
-          //todo:update #previousMessage.text to empty
           $('#previousMessage').text( "" )
           $('#sendMessageForm textarea[name=message]').attr('val',"")
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-tutor-uid'))
           $('#tutorProfile').modal('hide')
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-tutor-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-tutor-uid')].name )
-          //todo: need to make database public for all users so users can see everyones profile photos
-          $('#messagePhoto').attr('src', profiles[$(this).attr('data-tutor-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-tutor-uid')].photo )
+          $('#messagePhoto').attr('src', profiles[$(this).attr('data-tutor-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-tutor-uid')].photo )
           $('#sendMessageModal').modal('show')
         })
 
