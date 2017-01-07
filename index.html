@@ -512,9 +512,13 @@
             <h4 class="modal-title" id="appointmentTutorModalLabel">New appointment request from <span role='student-name'></span></h4>
           </div>
           <div class="modal-body">
-            <div id="appointmentTutorAction" class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-success" role="accept" data-appointment-id=''>Accept</button>
-              <button type="button" class="btn btn-danger" role="reject" data-appointment-id=''>Reject</button>
+            <div id="appointmentTutorAction" class="btn-group btn-group-justified" role="group" aria-label="...">
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-success" role="accept" data-appointment-id=''>Accept</button>
+              </div>
+              <div class="btn-group" role="group">
+                <button type="button" class="btn btn-danger" role="reject" data-appointment-id=''>Reject</button>
+              </div>
             </div>
           </div>
           <div class="modal-footer">
@@ -762,6 +766,39 @@
           })
         }
 
+        function addDatabaseListeners() {
+          // update messages
+          firebase.database().ref('messages').on('child_added', function(snapshot) {
+            if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
+              $('#previousMessage').text( snapshot.val().text )
+              $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
+              $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
+              $('#messagePhoto').attr('src', profiles[snapshot.val().sender_uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[snapshot.val().sender_uid].photo )
+              $('#sendMessageModal').modal('show')
+            }
+          });
+
+          // listen for new appointments added 
+          firebase.database().ref('appointments').on('child_added', function(snapshot) {
+            if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
+              $('#appointmentTutorAction button').attr('data-appointment-id', snapshot.key)
+              $('#appointmentTutorModal').modal('show')
+            }
+          })
+
+          // listen for appointments status change 
+          firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
+            if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
+              if ( snapshot.val().accept == 1 ) {
+                alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+              }
+              else if ( snapshot.val().accept == -1 ) {
+                alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+              }
+            }
+          })
+        }
+
         // Initialize Firebase
         var config = {
           apiKey: "AIzaSyB7NvzRR35IhafEfpimyJ94e7vpK1rKD2c",
@@ -847,39 +884,10 @@
         reloadProfiles()
 
         /* initialize done, user profile related functions 1s after page load because eff firebase */
-        // if logged in, get information from database
         setTimeout( function() {
-          // update messages
-          firebase.database().ref('messages').on('child_added', function(snapshot) {
-            if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
-              $('#previousMessage').text( snapshot.val().text )
-              $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
-              $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
-              $('#messagePhoto').attr('src', profiles[snapshot.val().sender_uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[snapshot.val().sender_uid].photo )
-              $('#sendMessageModal').modal('show')
-            }
-          });
-
-          // listen for new appointments added 
-          firebase.database().ref('appointments').on('child_added', function(snapshot, key) {
-            if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
-              $('#appointmentTutorAction button').attr('data-appointment-id', key)
-              $('#appointmentTutorModal').modal('show')
-            }
-          })
-
-          // listen for appointments status change 
-          firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
-            if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
-              if ( snapshot.val().accept == 1 ) {
-                alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
-              }
-              else if ( snapshot.val().accept == -1 ) {
-                alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
-              }
-            }
-          })
-          
+          if ( firebase.auth().currentUser ) {
+            addDatabaseListeners()
+          }
         }, 1000 )
 
         /* events */
@@ -928,6 +936,7 @@
             .then( function (u) {
               $btn.button('reset')
               $('#logInPage').modal('hide')
+              addDatabaseListeners()
               $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + profiles[firebase.auth().currentUser.uid].name + "! </strong> You have successfully logged in.")
               $("#alertMessage").show()
               setTimeout( function() {
@@ -1333,20 +1342,28 @@
 
         // set appointment
         $('#tutorProfileSetAppointment').on('click', function () {
-          var $btn = $(this).button('loading')
-          var newAppointmentId = firebase.database().ref().child('appointments').push().key;
-          firebase.database().ref('appointments/'+newAppointmentId).set({
-            tutor_uid: $('#sendMessageForm').attr('data-receiver-uid'),
-            student_uid: firebase.auth().currentUser.uid,
-            timestamp: firebase.database.ServerValue.TIMESTAMP,
-            accept: 0 // 0 = pending, 1 = accepted, -1 = rejected
-          }).then( function () {
-            $btn.button('reset')
-            alert('Request sent.')
-            $('#tutorProfile').modal('hide')
-          }, function (error) {
-            alert(error.message)
-          } );
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          res = confirm('Are you sure?')
+          if ( res ) {
+            var $btn = $(this).button('loading')
+            var newAppointmentId = firebase.database().ref().child('appointments').push().key;
+            firebase.database().ref('appointments/'+newAppointmentId).set({
+              tutor_uid: $(this).attr('data-tutor-uid'),
+              student_uid: firebase.auth().currentUser.uid,
+              timestamp: firebase.database.ServerValue.TIMESTAMP,
+              accept: 0 // 0 = pending, 1 = accepted, -1 = rejected
+            }).then( function () {
+              $btn.button('reset')
+              alert('Request sent.')
+              $('#tutorProfile').modal('hide')
+            }, function (error) {
+              alert(error.message)
+            } )
+          }
         })
 
         // appointments accept/reject tutor
@@ -1383,6 +1400,12 @@
 
         // Send message modal
         $('#tutorProfileSendMessage').on('click', function () {
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          //todo:update #previousMessage.text to empty
           $('#previousMessage').text( "" )
           $('#sendMessageForm textarea[name=message]').attr('val',"")
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-tutor-uid'))
@@ -1426,7 +1449,12 @@
 
         //open message list (messaging style)
         $('a[href="#open-message-list" ]').click( function() {
-        // $('#messagesPage').on('shown.bs.modal', function () {
+          // check login
+          if ( ! firebase.auth().currentUser ) {
+            $('#logInPage').modal('show')
+            return false 
+          }
+          // $('#messagesPage').on('shown.bs.modal', function () {
           $('#messageList').empty();
           firebase.database().ref('messages').orderByChild('receiver_uid').equalTo(firebase.auth().currentUser.uid).on('child_added', function(snapshot) {
             //todo: only display most recent message from users
