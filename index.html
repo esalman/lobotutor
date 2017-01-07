@@ -260,13 +260,10 @@
             <h4 class="modal-title" id="studentSettingsLabel">Class Schedule </h4>
           </div>
           <div class="modal-body">
-            <form id="studentSettingsForm">
-              <table class="table table-striped" id="tab_logic">
-                <tbody>
-                  <tr id='ClassNumber0'></tr>
-                </tbody>
-              </table>
-            </form>
+            <table class="table" id="tab_logic">
+              <tbody id='ClassNumber'>
+              </tbody>
+            </table>
             <div class=text-right>
               <button type="button" class="btn btn-default btn-xs" id="DeleteClass"> 
                 <span class="glyphicon glyphicon-trash"></span>
@@ -302,7 +299,15 @@
               <img id="tutorPhoto" class="img-circle" style="max-height: 140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
-            <br />
+  <!--           <div class="form-group">
+              <div class="btn-group btn-group-justified" >
+                  <label type="button" class="btn glyphicon glyphicon-camera"> Upload
+                    <input id="photo" type="file" accept="image/*" capture="camera" style="display: none;">
+                  </label> 
+              </div>
+            </div> -->
+
+            <!-- <br /> -->
             <div class="text-center">
               <div id="tutorRatings" name="ratingVal" class="btn-group btn-group-lg" data-value="4">
                   <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
@@ -325,7 +330,7 @@
             <form>
               <div class="form-group">
                 <div class = "input-group">
-                  <input id="teachClass" type="text" class="form-control" name="subjects" placeholder="What are you interested in teaching?">
+                  <input id="teachClass" type="text" class="form-control" autocomplete="off" name="subjects" placeholder="What are you interested in teaching?">
                   <div class="input-group-btn">
                       <button id="addTutorClass" type="button" class="btn btn-default " aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus"></i></button> 
                       <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
@@ -388,11 +393,9 @@
             </div>
 
             <!-- <br/> -->
-
             <div class="text-center">
-              <h4>Hourly Rate: $15</h4>
+              <h4 id="tutorsRate" >Hourly Rate: $15</h4>
             </div>
-
 
             <div class="btn-group btn-group-justified" role="group" aria-label="...">
               <div class="btn-group" role="group">
@@ -651,6 +654,14 @@
             $('#tutorProfileSetAppointment').attr('data-tutor-uid', uid)
             $('#tutorProfileSendMessage').attr('data-tutor-uid', uid)
             $('#tutorUserPhoto').attr('src', profiles[uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[uid].photo )
+            //load rate
+            // id=" 
+            if(profiles[uid].rate!=null){
+              $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
+            }
+            else{
+              $('#tutorsRate').text("Hourly Rate: $" + profiles[uid].rate)
+            }
             //load rating
             //change color of stars based off of ratingVal value
             if (profiles[uid].rating == 1){
@@ -797,7 +808,7 @@
         setTimeout( function() {
           // update map with user's subjects
         }, 1000 )
-        
+
         /* events */
 
         // common modal close event- reload profile
@@ -814,18 +825,18 @@
           }
           //Class Schedule Table setup
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            if ( snapshot.val().CurrentClasses == undefined ) {
-              for (i = 0; i < 100; i++) {
-                $("#ClassNumber"+(i-1)).html('');
-              }
-              $('#ClassNumber0').html("<td>"+ "No Classes in Schedule" +"</td>");
+            $('#ClassNumber tr').remove();
+            if ( snapshot.val().student_classes == undefined || snapshot.val().student_classes == "" ) {
+              $('<tr id="ClassNumber0"> <td>'+ "No Classes in Schedule" +"</td> </tr>").appendTo('#ClassNumber');
             }
             else{
-              NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
-              ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
+              PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+              ClassesForSchedule = PrevClass.split(",");
+              NumberOfClasses = ClassesForSchedule.length
+              console.log(NumberOfClasses)
+              console.log(ClassesForSchedule)
               for (i = 0; i < NumberOfClasses; i++) {
-                  $('#ClassNumber'+i).html("<td>"+ ClassesForSchedule[i] +"</td>");
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');
+                  $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> </tr>").appendTo('#ClassNumber');
               }
             }
           })
@@ -1153,68 +1164,95 @@
         // var classcount = 0;
         $('#addClass').on('click', function () {
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            
-            if ( ! snapshot.val() ) {
-              PrevClass = $('#studentSettings').find('input[name=classes]').val();
-            }
-            else {
-              PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#studentSettings').find('input[name=classes]').val();              
-            }
-            firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-              'CurrentClasses' :  PrevClass
-            }) 
-            if (snapshot.val().CurrentClasses == undefined) {
-              $('#ClassNumber0' ).html("<td>"+ $('#studentSettings').find('input[name=classes]').val() +"</td>");
-              $('#tab_logic').append('<tr id="ClassNumber1"></tr>');  
-            } 
-            else{
-              if ( snapshot.val().CurrentClasses.includes($('#studentSettings').find('input[name=classes]').val()) )  {
-                alert("Please choose a class that is not already in your schedule.");
-                firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-                  NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length;
-                  ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
-                  ClassesForSchedule.splice(NumberOfClasses-1,1);
-                  ClassesForSchedule =  ClassesForSchedule.join();
-                  console.log(NumberOfClasses)
-                  console.log(ClassesForSchedule);
-                  firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-                    'CurrentClasses' :  ClassesForSchedule
-                  }) 
-                })
-              }     
+              if ( ! snapshot.val() ) {
+                PrevClass = $('#studentSettings').find('input[name=classes]').val();
+              }
+              else {
+                PrevClass = (snapshot.val().student_classes == undefined || snapshot.val().student_classes == "" ? '' : snapshot.val().student_classes + ', ') + $('#studentSettings').find('input[name=classes]').val();   
+                PrevClass = PrevClass.trim().replace(/(^,)|(,$)/g, "").trim();
+              }
+              firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                'student_classes' :  PrevClass
+              }) 
+              if (snapshot.val().student_classes == undefined || snapshot.val().student_classes == "") { 
+                $('#ClassNumber tr').remove();
+                $('<tr id="ClassNumber0"> <td>'+ $('#studentSettings').find('input[name=classes]').val() +" </td> </tr>").appendTo('#ClassNumber');
+              } 
               else{
-                console.log("Why the fuck am I here")
-                NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
-                for (i = NumberOfClasses; i < NumberOfClasses + 1; i++) {
-                  $('#ClassNumber'+ i ).html("<td>"+ $('#studentSettings').find('input[name=classes]').val() +"</td>");
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');  
+                if ( snapshot.val().student_classes.includes($('#studentSettings').find('input[name=classes]').val()) )  {
+                  alert("Please choose a class that is not already in your schedule.");
+                  firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+                    PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                    ClassesForSchedule = PrevClass.split(",");
+                    NumberOfClasses = ClassesForSchedule.length
+                    ClassesForSchedule.splice(NumberOfClasses-1,1);
+                    ClassesForSchedule =  ClassesForSchedule.join();
+                    firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                      'student_classes' :  ClassesForSchedule
+                    }) 
+                  })
+                }     
+                else{
+                  NumberOfClasses = (snapshot.val().student_classes.split(",")).length
+                  for (i = NumberOfClasses; i < NumberOfClasses + 1; i++) {
+                  $('<tr id="ClassNumber'+(i)+'"> <td>'+ $('#studentSettings').find('input[name=classes]').val() +" </td> </tr>").appendTo('#ClassNumber'); 
+                  }
                 }
               }
-            }   
             //delete input from addSchedule box
             document.getElementById("addSchedule").value = "";  
           })
         })
 
-
         $('#DeleteClass').on('click', function () {
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            if (snapshot.val().CurrentClasses == undefined) {
+            if (snapshot.val().student_classes == undefined) {
               alert("No Classes in Schedule");  
             } 
             else{
-              NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length;
-              ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
+              PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+              ClassesForSchedule = PrevClass.split(",");
+              NumberOfClasses = ClassesForSchedule.length
+              $('#ClassNumber tr').remove();
               for (i = 0; i < NumberOfClasses; i++) {
-                  $('#ClassNumber'+i).html('<td>'+ ClassesForSchedule[i] +'</td><td>' 
-                    +  '<button id ="DeleteClass'+ i +'" class="btn btn-danger btn-xs">'
+                $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> <td> " 
+                    +  '<button id ="DeleteEventClass' + i + '" class="btn btn-danger btn-xs" value="'+i+'">'
                     +  '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'
-                    +  '</button> </td>');
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');
+                    +  '</button> </td> </tr>').appendTo('#ClassNumber'); 
+
+                  $('#DeleteEventClass'+i).click(function(event){
+                    firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+                      PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                      ClassesForSchedule = PrevClass.split(",");
+                      NumberOfClasses = ClassesForSchedule.length
+                      ClassesForSchedule.splice(this.value,1);
+                      ClassesForSchedule =  ClassesForSchedule.join();
+                      firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                      'student_classes' :  ClassesForSchedule
+                      }) 
+                      firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+                        PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                        ClassesForSchedule = PrevClass.split(",");
+                        NumberOfClasses = ClassesForSchedule.length
+                        console.log(snapshot.val().student_classes)
+                        $('#ClassNumber tr').remove();
+                        if(snapshot.val().student_classes == "")
+                        {
+                          $('<tr id="ClassNumber0"> <td>'+ "No Classes in Schedule" +"</td> </tr>").appendTo('#ClassNumber');
+                        }
+                        else{
+                          for (i = 0; i < NumberOfClasses; i++) {
+                          $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> </tr>").appendTo('#ClassNumber'); 
+                        }
+                        }
+                      })
+                    })
+                  })
               }
-            }   
+            }    
           })
         })
+
 
         //delete classes from firebase
 
