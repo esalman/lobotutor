@@ -162,6 +162,26 @@
           from { -webkit-transform: rotate(0deg); }
           to { -webkit-transform: rotate(360deg); }
       }
+      #messageNavBar ul {
+          list-style-type: none;
+          margin: 0;
+          padding: 0;
+          width: 25%;
+          background-color: #f1f1f1;
+          height: 100%; /* Full height */
+          position: fixed; /* Make it stick, even on scroll */
+          overflow: auto; /* Enable scrolling if the sidenav has too much content */
+      }
+
+      #messageNavBar li {
+          display: inline;
+      }
+      .nav-pills>li.active>a, .nav-pills>li.active>a:focus, .nav-pills>li.active>a:hover {
+        background-color: #c10037;
+      }
+      a {
+        color: #c10037;
+      }
      </style>
   </head>
   <body>
@@ -416,11 +436,11 @@
             <!-- <br /> -->
             <div class="text-center" style="margin-top:10px">
               <div id="tutorUserRatings" data-tutor-uid=""name="ratingVal" class="btn-group btn-group-lg" data-value="4">
-                  <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
-                  <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
-                  <span name = "star3" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
-                  <span name = "star4" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
-                  <span name = "star5" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:grey"></span>
+                <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                <span name = "star3" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                <span name = "star4" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:gold"></span>
+                <span name = "star5" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:grey"></span>
               </div>
             </div>
 
@@ -460,9 +480,23 @@
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h4 class="modal-title" id="messagesPageLabel">Recent Messages</h4>
+                        <!-- Navbar -->
           </div>
           <div class="modal-body">
-            <ul id="messageList" class="list-group"></ul>
+            <ul class="nav nav-pills" id="messageTabs" role="tablist"> 
+              <li role="presentation" class="active"><a href="#messages" id="messages-tab" role="tab" data-toggle="tab" aria-controls="messages" aria-expanded="true">Messages</a></li> 
+              <li role="presentation"><a href="#appointments" role="tab" id="appointments-tab" data-toggle="tab" aria-controls="appointments">Appointments</a></li> 
+            </ul> 
+            <div class="tab-content" id="messageTabContent"> 
+              <div class="tab-pane fade in active" role="tabpanel" id="messages" aria-labelledby="messages-tab"> 
+                <br />
+                <ul id="messageList" class="list-group"></ul>
+              </div> 
+              <div class="tab-pane fade" role="tabpanel" id="appointments" aria-labelledby="appointments-tab"> 
+                <br />
+                <ul id="appointmentList" class="list-group"></ul>
+              </div> 
+            </div> 
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -539,7 +573,8 @@
             <h4 class="modal-title" id="aboutPageLabel">About</h4>
           </div>
           <div class="modal-body">
-            <p>LoboTutor is an app which builds a network between student tutors and students that like to learn. It provides a easy interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific subjects. When a fitting tutor is found on the interactive map an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which he wants to teach. He isable to show his availability. On his profile he can set a hourly rate. </p>
+            <p>LoboTutor is a new app which builds a network between student tutors and students that like to learn. It provides an easy and intuitive interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific courses and subjects. When a fitting tutor is found on the interactive map, an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. </p>
+            <p>Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which they would like to teach. They are able to show their availability and set a hourly rate. </p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -1504,11 +1539,31 @@
           })
 
           $('#messagesPage').modal('show')
+
+          // appointments
+          $('#appointmentList').empty();
+          firebase.database().ref('appointments').orderByChild('tutor_uid').equalTo(firebase.auth().currentUser.uid).limitToLast(100).on('child_added', function(snapshot) {
+            console.log(snapshot)
+            photo_url = profiles[snapshot.val().student_uid].photo != undefined ? profiles[snapshot.val().student_uid].photo : "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"
+            str = '<li class="list-group-item" data-student-uid="' + snapshot.val().student_uid + '">'+
+                '<div class="row">'+
+                  '<div class="col-xs-2">'+
+                    '<img id="tutorPhoto" class="img-circle" style="max-height: 40px;" src="'+ photo_url +'"/>'+
+                  '</div>'+
+                  '<div class="col-xs-8">'+
+                    '<h4 class="text-danger list-group-item-heading text-left"" role="name">' + profiles[snapshot.val().student_uid].name + '</h4>'+
+                  '</div>'+
+                '</div>'+
+              '</li>';
+            $(str).appendTo( $('#appointmentList') )
+          })
+
+          $('#messagesPage').modal('show')
           return false
         })
 
         // send message from message list
-        $('#messagesPage').on('click', 'li', function () {
+        $('#messageList').on('click', 'li', function () {
           $('#sendMessageForm textarea[name=message]').val('')
           $('#previousMessage').text( $(this).find('p[role=text]').text() )
           $('#messagePhoto').attr('src', profiles[$(this).attr('data-sender-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-sender-uid')].photo )
@@ -1516,6 +1571,11 @@
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#messagesPage').modal('hide')
           $('#sendMessageModal').modal('show')
+        })
+
+        $('#messageTabs a').click(function (e) {
+          e.preventDefault()
+          $(this).tab('show')
         })
 
         // course search typeahead
