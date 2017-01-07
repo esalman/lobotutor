@@ -133,6 +133,10 @@
         background-color: #c10037;
       }
 
+      #previousMessage{
+        font-size: medium;
+      }
+
      </style>
   </head>
   <body>
@@ -879,7 +883,7 @@
           // pre-populate form
         } )
 
-        // become a tutor button
+        // become a tutor button (tutor settings)
         $('a[href="#tutor-profile"]').click( function() {
           // check login
           if ( ! firebase.auth().currentUser ) {
@@ -888,52 +892,59 @@
           }
           firebase.database().ref('/profile/' + firebase.auth().currentUser.uid).once('value').then(function(snapshot) {
             $('#tutorSettings').find('input[name=rate]').val(snapshot.val().rate)
-            $('#tutorSettings').find('input[name=subjects]').val(snapshot.val().tutor_settings)
+            //$('#tutorSettings').find('input[name=subjects]').val(snapshot.val().tutor_settings)
             $('#tutorSettings').find('input[name=location]').val(snapshot.val().location)
             $('#tutorRatings').attr("data-value",snapshot.val().rating)
             $('#tutorPhoto').attr("src",snapshot.val().photo)
 
-          //change color of stars based off of ratingVal value
-          if ($('#tutorRatings').attr("data-value") == 1){
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")
-          }
-          else if ($('#tutorRatings').attr("data-value") == 2){
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
-          else if ($('#tutorRatings').attr("data-value") == 3){
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
-          else if ($('#tutorRatings').attr("data-value") == 4){
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }      
-          else if ($('#tutorRatings').attr("data-value") == 5){
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:gold")
-          } 
-          else {
-            $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:black")
-            $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:black")
-            $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:black")
-            $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:black")
-            $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:black")
-          } 
-
+            //change color of stars based off of ratingVal value
+            if ($('#tutorRatings').attr("data-value") == 1){
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")
+            }
+            else if ($('#tutorRatings').attr("data-value") == 2){
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
+            else if ($('#tutorRatings').attr("data-value") == 3){
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:grey")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }
+            else if ($('#tutorRatings').attr("data-value") == 4){
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:grey")          }      
+            else if ($('#tutorRatings').attr("data-value") == 5){
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:gold")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:gold")
+            } 
+            else {
+              $('#tutorRatings').find('[name=star1]').attr("style","font-size:1.5em; color:black")
+              $('#tutorRatings').find('[name=star2]').attr("style","font-size:1.5em; color:black")
+              $('#tutorRatings').find('[name=star3]').attr("style","font-size:1.5em; color:black")
+              $('#tutorRatings').find('[name=star4]').attr("style","font-size:1.5em; color:black")
+              $('#tutorRatings').find('[name=star5]').attr("style","font-size:1.5em; color:black")
+            } 
+            if (snapshot.val().tutor_classes != null){
+              var loadedTutorClasses = snapshot.val().tutor_classes.split(',')
+              //add to list
+              for(i = 0; i < loadedTutorClasses.length; i++){
+                $('<li class="list-group-item">' + loadedTutorClasses[i] + '</li>').prependTo( $('#teachClassList') )
+              }
+            }
+            
           });
                     
           $('#tutorSettings').modal('show')
@@ -941,15 +952,34 @@
           // pre-populate form
         } )
 
+        //Add tutor class
+        $('#addTutorClass').on('click',function(){
+          if ($('#tutorSettings').find('input[name=subjects]').val().length != 0 && $('#tutorSettings').find('input[name=subjects]').val() != undefined && $('#tutorSettings').find('input[name=subjects]').val() != " "){
+            $('<li class="list-group-item">' + ($('#tutorSettings').find('input[name=subjects]').val()) + '</li>').prependTo( $('#teachClassList') )
+            $('#teachClass').val("")
+          }
+          else { 
+            return false
+          }
+        })
+
         // tutor setting save changes functionality
         $('#saveTutorSettings').on('click', function () {
           var $btn = $(this).button('loading')
+
+          //turn class list into comma seperated string
+          var tutorClassList = document.getElementById('teachClassList').childNodes;
+          var tutorClass_tosave = tutorClassList[0].innerHTML
+          for(i = 1; i < tutorClassList.length; i++){
+            tutorClass_tosave = (tutorClass_tosave + ', ') + tutorClassList[i].innerHTML;               
+          }
+
           postData = {
             // name: $('#tutorSettings').find('input[name=name]').val(),
             rate: $('#tutorSettings').find('input[name=rate]').val(),
             location: $('#tutorSettings').find('input[name=location]').val(),
             availability: $('#tutorSettings').find('input[name=options]:checked').val(),
-            tutor_classes: $('#tutorSettings').find('input[name=subjects]').val()
+            tutor_classes: tutorClass_tosave
           }
           firebase.database().ref('profile/' + firebase.auth().currentUser.uid).update(postData).then( function () {
             $btn.button('reset')
@@ -1200,33 +1230,11 @@
         // send message from message list
         $('#messagesPage').on('click', 'li', function () {
           $('#previousMessage').text( $(this).find('p[role=text]').text() )
+          $('#messagePhoto').attr('src', profiles[$(this).attr('data-sender-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-sender-uid')].photo )
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-sender-uid'))
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
+          $('#messagesPage').modal('hide')
           $('#sendMessageModal').modal('show')
-        })
-
-        //todo: WORKING HERE -JOE
-        $('#addTutorClass').on('click',function(){
-          if ($('#tutorSettings').find('input[name=subjects]').val() != ""){
-            $('<li class="list-group-item">' + ($('#tutorSettings').find('input[name=subjects]').val()) + '</li>').prependTo( $('#teachClassList') )
-            $('#teachClass').val("")
-
-            firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            
-              if ( ! snapshot.val() ) {
-                PrevClass = $('#tutorSettings').find('input[name=classes]').val();
-              }
-              else {
-                PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#tutorstudentSettings').find('input[name=classes]').val();              
-              }
-              firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-                'tutor_classes' :  PrevClass
-              })
-            })
-          }
-          else { 
-            return false
-          }
         })
 
 
