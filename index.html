@@ -849,7 +849,37 @@
         /* initialize done, user profile related functions 1s after page load because eff firebase */
         // if logged in, get information from database
         setTimeout( function() {
-          // update map with user's subjects
+          // update messages
+          firebase.database().ref('messages').on('child_added', function(snapshot) {
+            if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
+              $('#previousMessage').text( snapshot.val().text )
+              $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
+              $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
+              $('#messagePhoto').attr('src', profiles[snapshot.val().sender_uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[snapshot.val().sender_uid].photo )
+              $('#sendMessageModal').modal('show')
+            }
+          });
+
+          // listen for new appointments added 
+          firebase.database().ref('appointments').on('child_added', function(snapshot, key) {
+            if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
+              $('#appointmentTutorAction button').attr('data-appointment-id', key)
+              $('#appointmentTutorModal').modal('show')
+            }
+          })
+
+          // listen for appointments status change 
+          firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
+            if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
+              if ( snapshot.val().accept == 1 ) {
+                alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+              }
+              else if ( snapshot.val().accept == -1 ) {
+                alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+              }
+            }
+          })
+          
         }, 1000 )
 
         /* events */
@@ -1319,26 +1349,6 @@
           } );
         })
 
-        // listen for new appointments added 
-        firebase.database().ref('appointments').on('child_added', function(snapshot, key) {
-          if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
-            $('#appointmentTutorAction button').attr('data-appointment-id', key)
-            $('#appointmentTutorModal').modal('show')
-          }
-        })
-
-        // listen for appointments status change 
-        firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
-          if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
-            if ( snapshot.val().accept == 1 ) {
-              alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
-            }
-            else if ( snapshot.val().accept == -1 ) {
-              alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
-            }
-          }
-        })
-
         // appointments accept/reject tutor
         $('#appointmentTutorAction button[role=accept]').on('click', function () {
           var $btn = $(this).button('loading')
@@ -1402,17 +1412,6 @@
           } )
           return false
         })
-
-        // update messages
-        firebase.database().ref('messages').on('child_added', function(snapshot) {
-          if ( snapshot.val().receiver_uid == firebase.auth().currentUser.uid ) {
-            $('#previousMessage').text( snapshot.val().text )
-            $('#sendMessageForm').attr('data-receiver-uid', snapshot.val().sender_uid)
-            $('#sendMessageModal span[role=receiver-name]').html( profiles[snapshot.val().sender_uid].name == undefined ? '<i>user</i>' : profiles[snapshot.val().sender_uid].name )
-            $('#messagePhoto').attr('src', profiles[snapshot.val().sender_uid].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[snapshot.val().sender_uid].photo )
-            $('#sendMessageModal').modal('show')
-          }
-        });
 
         // open message list
         // $('#messagesPage').on('shown.bs.modal', function () {
