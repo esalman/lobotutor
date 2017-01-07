@@ -1046,7 +1046,8 @@
           // validation
           if ( ( email.indexOf('unm.') < 0 && email.indexOf('cnm.') < 0 ) || ! email.endsWith('.edu') ) {
             alert('You msut have a @unm.edu or @cnm.edu email address to register.')
-            return false
+            $btn.button('reset')
+         	return false
           }
 
           // register
