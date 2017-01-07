@@ -560,6 +560,7 @@
           <div class="modal-body">
             <p>LoboTutor is a new app which builds a network between student tutors and students that like to learn. It provides an easy and intuitive interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific courses and subjects. When a fitting tutor is found on the interactive map, an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. </p>
             <p>Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which they would like to teach. They are able to show their availability and set a hourly rate. </p>
+            <p>Please click here for more help: <a href="http://www.unm.edu/~esalman/lobotutor/README.md">http://www.unm.edu/~esalman/lobotutor/README.md</a></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -692,7 +693,7 @@
 
           // Setup the click event listeners to center the map
           google.maps.event.addDomListener(controlUI, 'click', function () {
-            centerGPSLocation()
+          	centerGPSLocation()
           });
         }
 
@@ -859,7 +860,7 @@
         // initialize map
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 0, lng: 0},
-          zoom: 16,
+          zoom: 15,
           mapTypeControl: false,
           zoomControl: true,
           zoomControlOptions: {
