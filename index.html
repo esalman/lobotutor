@@ -185,8 +185,9 @@
               <span class="glyphicon glyphicon-cog">
             </button>
           </a>
-
-          <a class="navbar-brand" href="./"><span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a>
+          <a class="navbar-brand" href="./">
+             <!--    <img id="appPhoto" class="img-square" style="max-height: 40px;min-height:40px;background-color:none" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2FLoboTutorLogo_transparent.jpg?alt=media&token=dcd77d53-9339-4755-ac24-0002b7b91020"/>LoboTutor</a> -->
+               <span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a> 
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav"><a href="#main-profile"></a>
@@ -232,7 +233,7 @@
           <div class="modal-body">
 
             <div class="text-center">
-              <img id="mainPhoto" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="mainPhoto" class="img-circle" style="max-height: 140px;min-height:140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
             <div class="form-group">
@@ -245,7 +246,7 @@
 
             <form>
               <div class="form-group">
-                <label for="deptInput">Name</label>
+                <label for="nameInput">Name</label>
                 <input type="name" class="form-control" id="nameInput" name="name" placeholder="Name">
               </div>
 
@@ -281,13 +282,13 @@
       </div>
     </div>
 
-    <!-- Schedule -->
-    <div class="modal fade" id="studentSettings" tabindex="-1" role="dialog" aria-labelledby="studentSettingsLabel">
+    <!-- Class Schedule Settings-->
+    <div class="modal fade" id="studentSettings" tabindex="-1" role="dialog" aria-labelledby="classSettingsLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title" id="studentSettingsLabel">Class Schedule </h4>
+            <h4 class="modal-title" id="studentSettingsLabel">My Class Schedule </h4>
           </div>
           <div class="modal-body">
             <table class="table" id="tab_logic">
@@ -299,15 +300,25 @@
                 <span class="glyphicon glyphicon-trash"></span>
               Delete Class</button>
             </div>
+          
+
+            <label >Class</label>
+            <form>
+              <div class="form-group">
+                <div class="input-group">               
+                  <input class="form-control" id="addSchedule" type="text" autocomplete="off" name="classes" placeholder="Search Classes">
+                  <div class="input-group-btn">
+                    <button id ="addClass" type = "button" class="btn btn-danger " >
+                      <i class="glyphicon glyphicon-plus">Add</i>
+                        <!-- <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> -->
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
           </div>
+
           <div class="modal-footer">
-            <div class="form-group">
-              <label for="exampleInputEmail2">Class</label>
-              <input class="form-control" id="addSchedule" name="classes" placeholder="Class">
-            </div>
-            <button id ="addClass" class="btn btn-danger">
-              <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-            </button>
             <button type="button" class="btn btn-default" data-dismiss="modal"> Close</button>
           </div>
         </div>
@@ -326,16 +337,8 @@
           <div class="modal-body">
 
             <div class="text-center">
-              <img id="tutorPhoto" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="tutorPhoto" class="img-circle" style="max-height: 140px;min-height:140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
-
-  <!--           <div class="form-group">
-              <div class="btn-group btn-group-justified" >
-                  <label type="button" class="btn glyphicon glyphicon-camera"> Upload
-                    <input id="photo" type="file" accept="image/*" capture="camera" style="display: none;">
-                  </label> 
-              </div>
-            </div> -->
 
             <!-- <br /> -->
             <div class="text-center" style="margin-top:10px">
@@ -409,7 +412,7 @@
 
 
             <div class="text-center">
-              <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
+              <img id="tutorUserPhoto" data-tutor-uid="" class="img-circle" style="max-height: 140px;min-height:140px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/>
             </div>
 
             <!-- <br /> -->
@@ -453,7 +456,7 @@
     </div>    
 
     <!-- Messages -->
-    <div class="modal fade" id="messagesPage" tabindex="-1" role="dialog" aria-labelledby="messagesPageLabel" data-photo="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3">
+    <div class="modal fade" id="messagesPage" tabindex="-1" role="dialog" aria-labelledby="messagesPageLabel" data-photo="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
@@ -484,7 +487,7 @@
               <div class="form-group">
                 <div class = "row"> 
                   <div class="col-xs-2"> 
-                    <img id="messagePhoto" class="img-circle" style="max-height: 40px; min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
+                    <img id="messagePhoto" class="img-circle" style="max-height: 40px; min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
                   </div> 
                   <div class="col-xs-10">
                     <blockquote id='previousMessage' display='block'></blockquote>
@@ -1407,7 +1410,7 @@
           }
           //todo:update #previousMessage.text to empty
           $('#previousMessage').text( "" )
-          $('#sendMessageForm textarea[name=message]').attr('val',"")
+          $('#sendMessageForm textarea[name=message]').val('')
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-tutor-uid'))
           $('#tutorProfile').modal('hide')
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-tutor-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-tutor-uid')].name )
@@ -1431,21 +1434,9 @@
           }, function (error) {
             alert(error.message)
           } )
+          $('#sendMessageForm textarea[name=message]').attr('val',"")
           return false
         })
-
-        // open message list
-        // $('#messagesPage').on('shown.bs.modal', function () {
-        //   firebase.database().ref('messages').orderByChild('receiver_uid').equalTo(firebase.auth().currentUser.uid).on('child_added', function(snapshot) {
-        //     $('<li class="list-group-item" data-sender-uid="' + snapshot.val().sender_uid + '"><span class="text-danger" role="name">' + profiles[snapshot.val().sender_uid].name + '</span>: <span role="text">' + snapshot.val().text + '</span></li>').prependTo( $('#messageList') )
-        //   });
-        // }) 
-        // // send message from message list
-        // $('#messagesPage').on('click', 'li', function () {
-        //   $('#previousMessage').text( $(this).find('span[role=text]').text() )
-        //   $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-sender-uid'))
-        //   $('#sendMessageModal').modal('show')
-        // })
 
         //open message list (messaging style)
         $('a[href="#open-message-list" ]').click( function() {
@@ -1470,6 +1461,7 @@
 
         // send message from message list
         $('#messagesPage').on('click', 'li', function () {
+          $('#sendMessageForm textarea[name=message]').val('')
           $('#previousMessage').text( $(this).find('p[role=text]').text() )
           $('#messagePhoto').attr('src', profiles[$(this).attr('data-sender-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-sender-uid')].photo )
           $('#sendMessageForm').attr('data-receiver-uid', $(this).attr('data-sender-uid'))
