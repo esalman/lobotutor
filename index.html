@@ -275,13 +275,10 @@
             <h4 class="modal-title" id="studentSettingsLabel">Class Schedule </h4>
           </div>
           <div class="modal-body">
-            <form id="studentSettingsForm">
-              <table class="table table-striped" id="tab_logic">
-                <tbody>
-                  <tr id='ClassNumber0'></tr>
-                </tbody>
-              </table>
-            </form>
+            <table class="table" id="tab_logic">
+              <tbody id='ClassNumber'>
+              </tbody>
+            </table>
             <div class=text-right>
               <button type="button" class="btn btn-default btn-xs" id="DeleteClass"> 
                 <span class="glyphicon glyphicon-trash"></span>
@@ -483,6 +480,27 @@
                 </div>
               <button type="submit" class="btn btn-success">Send</button>
             </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+    <!-- appointment set tutor -->
+    <div class="modal fade" id="appointmentTutorModal" tabindex="-1" role="dialog" aria-labelledby="appointmentTutorModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="appointmentTutorModalLabel">New appointment request from <span role='student-name'></span></h4>
+          </div>
+          <div class="modal-body">
+            <div id="appointmentTutorAction" class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-success" role="accept" data-appointment-id=''>Accept</button>
+              <button type="button" class="btn btn-danger" role="reject" data-appointment-id=''>Reject</button>
+            </div>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -818,15 +836,14 @@
         setTimeout( function() {
           // update map with user's subjects
         }, 1000 )
-        
+
         /* events */
 
-        // profile update listener
-        firebase.database().ref('profile/').on('child_changed', function() {
-          console.log('changed')
+        // common modal close event- reload profile
+        $('div.modal').on('hidden.bs.modal', function (e) {
           reloadProfiles()
-        });
-        
+        })
+
         // profile button functionality
         $('a[href="#student-profile"]').click( function() {
           // check login
@@ -836,18 +853,18 @@
           }
           //Class Schedule Table setup
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            if ( snapshot.val().CurrentClasses == undefined ) {
-              for (i = 0; i < 100; i++) {
-                $("#ClassNumber"+(i-1)).html('');
-              }
-              $('#ClassNumber0').html("<td>"+ "No Classes in Schedule" +"</td>");
+            $('#ClassNumber tr').remove();
+            if ( snapshot.val().student_classes == undefined || snapshot.val().student_classes == "" ) {
+              $('<tr id="ClassNumber0"> <td>'+ "No Classes in Schedule" +"</td> </tr>").appendTo('#ClassNumber');
             }
             else{
-              NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
-              ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
+              PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+              ClassesForSchedule = PrevClass.split(",");
+              NumberOfClasses = ClassesForSchedule.length
+              console.log(NumberOfClasses)
+              console.log(ClassesForSchedule)
               for (i = 0; i < NumberOfClasses; i++) {
-                  $('#ClassNumber'+i).html("<td>"+ ClassesForSchedule[i] +"</td>");
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');
+                  $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> </tr>").appendTo('#ClassNumber');
               }
             }
           })
@@ -868,7 +885,6 @@
               $('#logInPage').modal('hide')
               $("#alertMessage #alertMessageSpan").html("<strong> Hello, " + profiles[firebase.auth().currentUser.uid].name + "! </strong> You have successfully logged in.")
               $("#alertMessage").show()
-              reloadProfiles()
               setTimeout( function() {
                 $("#alertMessage").hide()
               }, 2000 )
@@ -905,7 +921,6 @@
             setTimeout( function() {
                $("#alertMessage").hide()
             }, 2000 ) 
-            reloadProfiles()
           }, function(error) {
             alert(error.message)
             $btn.button('reset')
@@ -1153,8 +1168,7 @@
 
             });
           }
-          $('#Settings').modal('hide')
-          reloadProfiles()
+         $('#Settings').modal('hide')
         })
 
         // tutor location update
@@ -1179,74 +1193,166 @@
         // var classcount = 0;
         $('#addClass').on('click', function () {
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            
-            if ( ! snapshot.val() ) {
-              PrevClass = $('#studentSettings').find('input[name=classes]').val();
-            }
-            else {
-              PrevClass = (snapshot.val().CurrentClasses == undefined ? '' : snapshot.val().CurrentClasses + ', ') + $('#studentSettings').find('input[name=classes]').val();              
-            }
-            firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-              'CurrentClasses' :  PrevClass
-            }) 
-            if (snapshot.val().CurrentClasses == undefined) {
-              $('#ClassNumber0' ).html("<td>"+ $('#studentSettings').find('input[name=classes]').val() +"</td>");
-              $('#tab_logic').append('<tr id="ClassNumber1"></tr>');  
-            } 
-            else{
-              if ( snapshot.val().CurrentClasses.includes($('#studentSettings').find('input[name=classes]').val()) )  {
-                alert("Please choose a class that is not already in your schedule.");
-                firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-                  NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length;
-                  ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
-                  ClassesForSchedule.splice(NumberOfClasses-1,1);
-                  ClassesForSchedule =  ClassesForSchedule.join();
-                  console.log(NumberOfClasses)
-                  console.log(ClassesForSchedule);
-                  firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
-                    'CurrentClasses' :  ClassesForSchedule
-                  }) 
-                })
-              }     
+              if ( ! snapshot.val() ) {
+                PrevClass = $('#studentSettings').find('input[name=classes]').val();
+              }
+              else {
+                PrevClass = (snapshot.val().student_classes == undefined || snapshot.val().student_classes == "" ? '' : snapshot.val().student_classes + ', ') + $('#studentSettings').find('input[name=classes]').val();   
+                PrevClass = PrevClass.trim().replace(/(^,)|(,$)/g, "").trim();
+              }
+              firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                'student_classes' :  PrevClass
+              }) 
+              if (snapshot.val().student_classes == undefined || snapshot.val().student_classes == "") { 
+                $('#ClassNumber tr').remove();
+                $('<tr id="ClassNumber0"> <td>'+ $('#studentSettings').find('input[name=classes]').val() +" </td> </tr>").appendTo('#ClassNumber');
+              } 
               else{
-                console.log("Why the fuck am I here")
-                NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length
-                for (i = NumberOfClasses; i < NumberOfClasses + 1; i++) {
-                  $('#ClassNumber'+ i ).html("<td>"+ $('#studentSettings').find('input[name=classes]').val() +"</td>");
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');  
+                if ( snapshot.val().student_classes.includes($('#studentSettings').find('input[name=classes]').val()) )  {
+                  alert("Please choose a class that is not already in your schedule.");
+                  firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+                    PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                    ClassesForSchedule = PrevClass.split(",");
+                    NumberOfClasses = ClassesForSchedule.length
+                    ClassesForSchedule.splice(NumberOfClasses-1,1);
+                    ClassesForSchedule =  ClassesForSchedule.join();
+                    firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                      'student_classes' :  ClassesForSchedule
+                    }) 
+                  })
+                }     
+                else{
+                  NumberOfClasses = (snapshot.val().student_classes.split(",")).length
+                  for (i = NumberOfClasses; i < NumberOfClasses + 1; i++) {
+                  $('<tr id="ClassNumber'+(i)+'"> <td>'+ $('#studentSettings').find('input[name=classes]').val() +" </td> </tr>").appendTo('#ClassNumber'); 
+                  }
                 }
               }
-            }   
             //delete input from addSchedule box
             document.getElementById("addSchedule").value = "";  
           })
         })
 
-
         $('#DeleteClass').on('click', function () {
           firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
-            if (snapshot.val().CurrentClasses == undefined) {
+            if (snapshot.val().student_classes == undefined) {
               alert("No Classes in Schedule");  
             } 
             else{
-              NumberOfClasses = (snapshot.val().CurrentClasses.split(",")).length;
-              ClassesForSchedule = snapshot.val().CurrentClasses.split(",");
+              PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+              ClassesForSchedule = PrevClass.split(",");
+              NumberOfClasses = ClassesForSchedule.length
+              $('#ClassNumber tr').remove();
               for (i = 0; i < NumberOfClasses; i++) {
-                  $('#ClassNumber'+i).html('<td>'+ ClassesForSchedule[i] +'</td><td>' 
-                    +  '<button id ="DeleteClass'+ i +'" class="btn btn-danger btn-xs">'
+                $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> <td> " 
+                    +  '<button id ="DeleteEventClass' + i + '" class="btn btn-danger btn-xs" value="'+i+'">'
                     +  '<span class="glyphicon glyphicon-minus" aria-hidden="true"></span>'
-                    +  '</button> </td>');
-                  $('#tab_logic').append('<tr id="ClassNumber'+(i+1)+'"></tr>');
+                    +  '</button> </td> </tr>').appendTo('#ClassNumber'); 
+
+                  $('#DeleteEventClass'+i).click(function(event){
+                    firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot) {
+                      PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                      ClassesForSchedule = PrevClass.split(",");
+                      NumberOfClasses = ClassesForSchedule.length
+                      ClassesForSchedule.splice(this.value,1);
+                      ClassesForSchedule =  ClassesForSchedule.join();
+                      firebase.database().ref('/profile/' + firebase.auth().currentUser.uid ).update({
+                      'student_classes' :  ClassesForSchedule
+                      }) 
+                      firebase.database().ref("/profile/" + firebase.auth().currentUser.uid).once("value").then(function(snapshot){
+                        PrevClass = (snapshot.val().student_classes).trim().replace(/(^,)|(,$)/g, "").trim() ;
+                        ClassesForSchedule = PrevClass.split(",");
+                        NumberOfClasses = ClassesForSchedule.length
+                        console.log(snapshot.val().student_classes)
+                        $('#ClassNumber tr').remove();
+                        if(snapshot.val().student_classes == "")
+                        {
+                          $('<tr id="ClassNumber0"> <td>'+ "No Classes in Schedule" +"</td> </tr>").appendTo('#ClassNumber');
+                        }
+                        else{
+                          for (i = 0; i < NumberOfClasses; i++) {
+                          $('<tr id="ClassNumber'+(i)+'"> <td>'+ ClassesForSchedule[i] +" </td> </tr>").appendTo('#ClassNumber'); 
+                        }
+                        }
+                      })
+                    })
+                  })
               }
-            }   
+            }    
           })
         })
+
 
         //delete classes from firebase
 
         // set appointment
         $('#tutorProfileSetAppointment').on('click', function () {
+          var $btn = $(this).button('loading')
+          var newAppointmentId = firebase.database().ref().child('appointments').push().key;
+          firebase.database().ref('appointments/'+newAppointmentId).set({
+            tutor_uid: $('#sendMessageForm').attr('data-receiver-uid'),
+            student_uid: firebase.auth().currentUser.uid,
+            timestamp: firebase.database.ServerValue.TIMESTAMP,
+            accept: 0 // 0 = pending, 1 = accepted, -1 = rejected
+          }).then( function () {
+            $btn.button('reset')
+            alert('Request sent.')
+            $('#tutorProfile').modal('hide')
+          }, function (error) {
+            alert(error.message)
+          } );
+        })
 
+        // listen for new appointments added 
+        firebase.database().ref('appointments').on('child_added', function(snapshot, key) {
+          if ( snapshot.val().tutor_uid == firebase.auth().currentUser.uid && snapshot.val().accept == 0 ) {
+            $('#appointmentTutorAction button').attr('data-appointment-id', key)
+            $('#appointmentTutorModal').modal('show')
+          }
+        })
+
+        // listen for appointments status change 
+        firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
+          if ( snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
+            if ( snapshot.val().accept == 1 ) {
+              alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+            }
+            else if ( snapshot.val().accept == -1 ) {
+              alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+            }
+          }
+        })
+
+        // appointments accept/reject tutor
+        $('#appointmentTutorAction button[role=accept]').on('click', function () {
+          var $btn = $(this).button('loading')
+          key = $(this).attr('data-appointment-id')
+          res = confirm('Are you sure?')
+          if ( res ) {
+            firebase.database().ref('appointments/'+key).update({
+              accept: 1
+            }).then( function () {
+              $btn.button('reset')
+              $('#appointmentTutorModal').modal('hide')
+            }, function (error) {
+              alert(error.message)
+            } )
+          }
+        })
+        $('#appointmentTutorAction button[role=reject]').on('click', function () {
+          var $btn = $(this).button('loading')
+          key = $(this).attr('data-appointment-id')
+          res = confirm('Are you sure?')
+          if ( res ) {
+            firebase.database().ref('appointments/'+key).update({
+              accept: -1
+            }).then( function () {
+              $btn.button('reset')
+              $('#appointmentTutorModal').modal('hide')
+            }, function (error) {
+              alert(error.message)
+            } )
+          }
         })
 
         // Send message modal
@@ -1260,7 +1366,6 @@
           //todo: need to make database public for all users so users can see everyones profile photos
           $('#messagePhoto').attr('src', profiles[$(this).attr('data-tutor-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-tutor-uid')].photo )
           $('#sendMessageModal').modal('show')
-          reloadProfiles()
         })
 
         // Send Message submit
@@ -1268,21 +1373,17 @@
           if ( $('#sendMessageForm textarea[name=message]').val() == '' ) return false
           var $btn = $(this).button('loading')
           var newMessageId = firebase.database().ref().child('messages').push().key;
-          var time_now = new Date($.now());
-          console.log(time_now)
           firebase.database().ref('messages/'+newMessageId).set({
             text: $('#sendMessageForm textarea[name=message]').val(),
             receiver_uid: $('#sendMessageForm').attr('data-receiver-uid'),
             sender_uid: firebase.auth().currentUser.uid,
-            time_stamp: time_now
+            timestamp: firebase.database.ServerValue.TIMESTAMP
           }).then( function () {
             $btn.button('reset')
             $('#sendMessageModal').modal('hide')
-            reloadProfiles()
           }, function (error) {
-            console.log('B:')
             alert(error.message)
-          } );
+          } )
           return false
         })
 
@@ -1334,7 +1435,6 @@
           $('#sendMessageModal span[role=receiver-name]').html( profiles[$(this).attr('data-sender-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-sender-uid')].name )
           $('#messagesPage').modal('hide')
           $('#sendMessageModal').modal('show')
-          reloadProfiles()
         })
 
 
