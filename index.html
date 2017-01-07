@@ -577,6 +577,7 @@
           <div class="modal-body">
             <p>LoboTutor is a new app which builds a network between student tutors and students that like to learn. It provides an easy and intuitive interface which lets students see available student tutors in the area around them. Students have the chance to see all available tutors or they can select to show tutors that teach specific courses and subjects. When a fitting tutor is found on the interactive map, an appointment can be set up through messages or ask directly to set up an appointment. The tutor is then able to accept or decline the appointment. </p>
             <p>Tutors can be rated, so that students are able to see the quality they can expect. On the tutor site the tutor can add classes to a schedule which they would like to teach. They are able to show their availability and set a hourly rate. </p>
+            <p>Please click here for more help: <a href="http://www.unm.edu/~esalman/lobotutor/README.md">http://www.unm.edu/~esalman/lobotutor/README.md</a></p>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -709,7 +710,7 @@
 
           // Setup the click event listeners to center the map
           google.maps.event.addDomListener(controlUI, 'click', function () {
-                      user.location.update();
+          	centerGPSLocation()
           });
         }
 
@@ -836,14 +837,32 @@
           firebase.database().ref('appointments').on('child_changed', function(snapshot, key) {
             if ( key && snapshot.val().student_uid == firebase.auth().currentUser.uid && snapshot.val().accept != 0 ) {
               if ( snapshot.val().accept == 1 ) {
-                alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+                alert('Appointment request accepted by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messages screen to track appointment.')
               }
               else if ( snapshot.val().accept == -1 ) {
-                alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messgaes screen to track appointment.')
+                alert('Appointment request rejected by ' + profiles[snapshot.val().tutor_uid].name + '! Please check messages screen to track appointment.')
               }
             }
           })
         }
+
+        function centerGPSLocation() {
+          // get user's location
+          navigator.geolocation.getCurrentPosition(function(position) {
+            // center the map
+            map.setCenter( new google.maps.LatLng(position.coords.latitude, position.coords.longitude) )
+            // put a marker at user's location
+            // var marker = new google.maps.Marker({
+            //   position: user.location.latlng,
+            //   map:map
+            // })
+          }, function (error) {
+            // center the map at UNM
+            map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
+          })
+        } 
+
+        // initializations 
 
         // Initialize Firebase
         var config = {
@@ -858,7 +877,7 @@
         // initialize map
         var map = new google.maps.Map(document.getElementById('map'), {
           center: {lat: 0, lng: 0},
-          zoom: 16,
+          zoom: 15,
           mapTypeControl: false,
           zoomControl: true,
           zoomControlOptions: {
@@ -876,31 +895,9 @@
         customControlDiv.index = 1;
         map.controls[google.maps.ControlPosition.RIGHT_CENTER].push(customControlDiv);
 
-        // initialize user object
-        user = {
-          location:  {
-            latlng: null,
-            update: function () {
-              // get user's location
-              navigator.geolocation.getCurrentPosition(function(position) {
-                // get latlng
-                user.location.latlng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
-                // center the map
-                map.setCenter(user.location.latlng)
-                // put a marker at user's location
-                // var marker = new google.maps.Marker({
-                //   position: user.location.latlng,
-                //   map:map
-                // })
-              }, function (error) {
-                // center the map at UNM
-                map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
-              })
-            }
-          }
-        }
         // update location, does not need login
-        user.location.update()
+        // centerGPSLocation()
+        map.setCenter( new google.maps.LatLng(35.0843188, -106.6197811) )
 
         // load all tutor profiles from firebase because eff firebase
         // then show on map
