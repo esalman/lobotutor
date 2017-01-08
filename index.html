@@ -365,8 +365,8 @@
           </div>
 
           <div class="modal-footer">
-            <button id="saveMainSettings" type="button" class="btn btn-primary" data-loading-text="saving...">Save changes</button>
-            <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+            <button id="saveMainSettings" type="button" class="btn btn-danger" data-loading-text="saving...">Save changes</button>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             <button id="logOutButtonMain" type="button" class="btn btn-danger" data-loading-text="Logging out..." >Logout</button>
           </div>
         </div>
@@ -459,10 +459,10 @@
                   <input id="teachClass" type="text" class="form-control" autocomplete="off" name="subjects" placeholder="Seach Classes">
                   <div class="input-group-btn">
                       <button id="addTutorClass" type="button" class="btn btn-default " aria-haspopup="true" aria-expanded="false"><i class="glyphicon glyphicon-plus">Add</i></button> 
-                      <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
+                      <button id="tutorDropDown" type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="caret"></span></button>
                       <!-- <label class="dropdown-menu dropdown-menu-right">My Tutor Classes</label> -->
                       <ul id="teachClassList" class="dropdown-menu dropdown-menu-right">
-                         <li id="dropDownHeader" class="dropdown-header">Classes I Tutor</li>
+                         <li id="dropDownHeader" class="dropdown-header">My Tutor Classes</li>
                       </ul>
                   </div>
                 </div>
@@ -1251,7 +1251,7 @@
               }
             }
 
-             $('<li class="dropdown-header">Classes I Tutor</li>').prependTo($('#teachClassList'))
+             $('<li class="dropdown-header">My Tutor Classes</li>').prependTo($('#teachClassList'))
             
           });
                     
@@ -1263,8 +1263,9 @@
         //Add tutor class
         $('#addTutorClass').on('click',function(){
           if ($('#tutorSettings').find('input[name=subjects]').val().length != 0 && $('#tutorSettings').find('input[name=subjects]').val() != undefined && $('#tutorSettings').find('input[name=subjects]').val() != " "){
-            $('<li class="list-group-item">' + ($('#tutorSettings').find('input[name=subjects]').val()) + '</li>').prependTo( $('#teachClassList') )
+            $('<li class="list-group-item">' + ($('#tutorSettings').find('input[name=subjects]').val()) + '</li>').appendTo( $('#teachClassList') )
             $('#teachClass').val("")
+            $('#tutorDropDown').attr('aria-expanded','true')
           }
           else { 
             return false
@@ -1622,7 +1623,7 @@
           // appointments
           $('#appointmentList').empty();
           firebase.database().ref('appointments').orderByChild('tutor_uid').equalTo(firebase.auth().currentUser.uid).limitToLast(100).on('child_added', function(snapshot) {
-            console.log(snapshot)
+            // console.log(snapshot)
             photo_url = profiles[snapshot.val().student_uid].photo != undefined ? profiles[snapshot.val().student_uid].photo : "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"
             str = '<li class="list-group-item" data-student-uid="' + snapshot.val().student_uid + '">'+
                 '<div class="row">'+
