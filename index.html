@@ -109,6 +109,14 @@
           right: 2.5%;
       }   
 
+      #alertMessageSearch {
+          position: absolute;
+          top: 100px;
+          width: 95%;
+          left: 2.5%;
+          right: 2.5%;
+      }
+
       #alertMessageMap {
           position: absolute;
           top: 100px;
@@ -325,6 +333,17 @@
       <span style="margin-left:10px"> Message and Appointment Button</span>
       <p> When you click the Message and Appointment Button, you are able to either view your recent received messages or your recent appointments.</p>     
       <button id="tourMessage" type="button" class="close" data-dismiss="alert" aria-label="Close">
+        Next
+        <span aria-hidden="true">&rarr;</span> 
+      </button>
+    </div>
+
+    <div id="alertMessageSearch" class="alert alert-success fade in" role="alert" style="display:none">
+      <h4 class="alert-heading">Quick Tour Guide!</h4>
+      <span class="glyphicon glyphicon-search" style="background-color: none;font-size: 20px;"></span>
+      <span style="margin-left:10px">Map Search Bar</span>
+      <p> Use the Map Search Bar to filter Tutors on map by class.</p>     
+      <button id="tourSearch" type="button" class="close" data-dismiss="alert" aria-label="Close">
         Next
         <span aria-hidden="true">&rarr;</span> 
       </button>
@@ -1706,8 +1725,11 @@
           $('#alertMessageMessages').show()
         })
 
-
         $('#tourMessage').on('click',function(){
+          $('#alertMessageSearch').show()
+        })
+
+        $('#tourSearch').on('click',function(){
           $('#alertMessageMap').show()
         })
 
