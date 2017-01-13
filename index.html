@@ -196,8 +196,6 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button> -->
-
-             <!--  <span class="glyphicon glyphicon-refresh spinning" style="background-color: #c10037;font-size: 20px;"></span> -->
         
           <a href="#main-profile">
             <button type="button" class="navbar-toggle collapsed" data-toggle="modal"  aria-expanded="false" aria-controls="navbar" aria-hidden="false">
@@ -205,8 +203,8 @@
             </button>
           </a>
           <a class="navbar-brand" href="./">
-             <!--    <img id="appPhoto" class="img-square" style="max-height: 40px;min-height:40px;background-color:none" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2FLoboTutorLogo_transparent.jpg?alt=media&token=dcd77d53-9339-4755-ac24-0002b7b91020"/>LoboTutor</a> -->
-               <span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor</a> 
+               <span class="glyphicon glyphicon-education" aria-hidden="true"></span> LoboTutor
+          </a> 
         </div>
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav"><a href="#main-profile"></a>
@@ -221,7 +219,7 @@
       <input id="homeSearchAsType" type="text" class="form-control" name="" placeholder="What are you looking to learn?" />
       <span id="homeSearchClear" class="glyphicon glyphicon-remove-circle"></span>
     </div>
-
+    <!--Alert-->
     <div id="alertMessage" class="alert alert-success fade in" role="alert" style="display:none">
       <button type="button" class="close" data-dismiss="alert" aria-label="Close">
         <span aria-hidden="true">&times;</span>
@@ -242,7 +240,6 @@
         <span aria-hidden="true">&times;</span>
       </button>
     </div>
-
     <div id="alertMessageSettings" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-cog" style="background-color: none;font-size: 20px;"></span>
@@ -253,7 +250,6 @@
         <span aria-hidden="true">&rarr;</span> 
       </button>
     </div>
-
     <div id="alertMessageClasses" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-align-justify" style="background-color: none;font-size: 20px;"></span>
@@ -264,7 +260,6 @@
         <span aria-hidden="true">&rarr;</span> 
       </button>
     </div>
-
     <div id="alertMessageTutor" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-education" style="background-color: none;font-size: 20px;"></span>
@@ -275,7 +270,6 @@
         <span aria-hidden="true">&rarr;</span> 
       </button>
     </div>
-
     <div id="alertMessageMessages" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-comment" style="background-color: none;font-size: 20px;"></span>
@@ -286,7 +280,6 @@
         <span aria-hidden="true">&rarr;</span> 
       </button>
     </div>
-
     <div id="alertMessageSearch" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-search" style="background-color: none;font-size: 20px;"></span>
@@ -297,7 +290,6 @@
         <span aria-hidden="true">&rarr;</span> 
       </button>
     </div>
-
     <div id="alertMessageMap" class="alert alert-success fade in" role="alert" style="display:none">
       <h4 class="alert-heading">Quick Tour Guide!</h4>
       <span class="glyphicon glyphicon-map-marker" style="background-color: none;font-size: 20px;"></span>
@@ -584,7 +576,6 @@
     </div>
 
     <!-- Send and receive message -->
-    <!-- todo: show user's profile photo -->
     <div class="modal fade" id="sendMessageModal" tabindex="-1" role="dialog" aria-labelledby="sendMessageModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -616,7 +607,7 @@
       </div>
     </div> 
 
-    <!-- appointment set tutor -->
+    <!-- Appointment set tutor -->
     <div class="modal fade" id="appointmentTutorModal" tabindex="-1" role="dialog" aria-labelledby="appointmentTutorModalLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -633,6 +624,63 @@
                 <button type="button" class="btn btn-danger" role="reject" data-appointment-id=''>Reject</button>
               </div>
             </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div> 
+
+        <!-- Appointment Modal -->
+    <div class="modal fade" id="seeAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="seeAppointmentModalLabel" data-key="not given">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="tutorProfileLabel">Appointment with <span role='receiver-name'></span></h4>
+          </div>
+          <div class="modal-body">
+            <form id='seeAppointmentForm' data-message-id='' data-receiver-uid=''>
+              <div class="form-group">
+                <div class = "row"> 
+                  <div class="col-xs-2"> 
+                    <img id="appointmentPhoto" class="img-circle" style="max-height: 40px; min-height:40px;" src="https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"/> 
+                  </div> 
+                  <div class="col-xs-10">
+       <!--              <div class="text-center">
+                      <div class="btn-group">
+                        <button class="btn btn-defaut">Send Message</button>
+                      </div> 
+                    </div>-->
+        <!--             if tutor <div class="text-center" style="margin-top:8px">
+                      <div id="tutorUserRatings" data-tutor-uid=""name="ratingVal" class="btn-group btn-group-lg" data-value="4">
+                        <span name = "star1" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:black"></span>
+                        <span name = "star2" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:black"></span>
+                        <span name = "star3" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:black"></span>
+                        <span name = "star4" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:black"></span>
+                        <span name = "star5" class="glyphicon glyphicon-star" aria-hidden="true" style="font-size:1.5em; color:black"></span>
+                      </div>
+                    </div> -->
+                  </div>
+                </div>
+                <!-- <textarea name="message" class="form-control" placeholder="Type a short message here"></textarea> -->
+              </div>
+              <div id="timer" class="text-center" style="font-size:40px">00:46.23</div>
+              <div class="text-center" style="font-size:35px">$12.54</div>      
+              
+              <div class="text-center">
+                <div class="btn-group">
+                      <button class="btn btn-danger" id="beginSession">Begin Session</button>
+                      <button class="btn btn-default">Pause Session</button>
+                </div>
+              </div>
+          
+        <!--       <div class="text-center">
+                <button class="btn btn-danger">End Session</button>
+              </div> -->
+      <!--         <button type="submit" class="btn btn-success">Send</button> -->
+            </form>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -662,7 +710,7 @@
       </div>
     </div>
 
-    <!-- log in -->
+    <!-- Log in -->
     <div class="modal fade" id="logInPage" tabindex="-1" role="dialog" aria-labelledby="logInPageLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -689,7 +737,7 @@
       </div>
     </div>
 
-    <!-- register -->
+    <!-- Register -->
     <div class="modal fade" id="registerPage" tabindex="-1" role="dialog" aria-labelledby="registerPageLabel">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -1095,7 +1143,6 @@
 
         // logout functionality
         $('#logOutButtonMain').on('click', function () {
-          console.log("here")
           var $btn = $(this).button('loading')
           name = profiles[firebase.auth().currentUser.uid].name
           firebase.auth().signOut().then(function() {
@@ -1505,6 +1552,9 @@
               tutor_uid: $(this).attr('data-tutor-uid'),
               student_uid: firebase.auth().currentUser.uid,
               timestamp: firebase.database.ServerValue.TIMESTAMP,
+              start_time: 0,
+              end_time: 0,
+              started: 0,
               accept: 0 // 0 = pending, 1 = accepted, -1 = rejected
             }).then( function () {
               $btn.button('reset')
@@ -1623,9 +1673,9 @@
           // appointments
           $('#appointmentList').empty();
           firebase.database().ref('appointments').orderByChild('tutor_uid').equalTo(firebase.auth().currentUser.uid).limitToLast(100).on('child_added', function(snapshot) {
-            // console.log(snapshot)
+           // console.log(snapshot.key)
             photo_url = profiles[snapshot.val().student_uid].photo != undefined ? profiles[snapshot.val().student_uid].photo : "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&token=3ab5f52f-c976-422c-98e1-75c02b6b69b3"
-            str = '<li class="list-group-item" data-student-uid="' + snapshot.val().student_uid + '">'+
+            str = '<li class="list-group-item" data-key="'+snapshot.key+'" data-student-uid="' + snapshot.val().student_uid + '">'+
                 '<div class="row">'+
                   '<div class="col-xs-2">'+
                     '<img id="tutorPhoto" class="img-circle" style="max-height: 40px;" src="'+ photo_url +'"/>'+
@@ -1656,6 +1706,48 @@
         $('#messageTabs a').click(function (e) {
           e.preventDefault()
           $(this).tab('show')
+        })
+
+        // open appointments from appointment list
+        $('#appointmentList').on('click', 'li', function () {
+          $('#seeAppointmentModal').attr('data-key',$(this).attr('data-key'))
+          $('#appointmentPhoto').attr('src', profiles[$(this).attr('data-student-uid')].photo == null ? "https://firebasestorage.googleapis.com/v0/b/lobotutor-5ebc3.appspot.com/o/images%2Fblank.jpg?alt=media&amp;token=3ab5f52f-c976-422c-98e1-75c02b6b69b3" : profiles[$(this).attr('data-student-uid')].photo )
+          $('#seeAppointmentForm').attr('data-receiver-uid', $(this).attr('data-student-uid'))
+          $('#seeAppointmentModal span[role=receiver-name]').html( profiles[$(this).attr('data-student-uid')].name == undefined ? '<i>user</i>' : profiles[$(this).attr('data-student-uid')].name )
+          // check if session began
+          
+           firebase.database().ref('appointments/'+$(this).attr('data-key')).once("value").then(function(snapshot){
+              if (snapshot.val().started == 1){
+                $('#beginSession').text(" End Session ")
+                console.log(firebase.database.ServerValue.TIMESTAMP-snapshot.val().start_time) 
+                //timer.text()
+              }
+              else{
+                $('#beginSession').text("Begin Session")
+              }
+            })
+
+          $('#messagesPage').modal('hide')
+          $('#seeAppointmentModal').modal('show')
+        })
+
+        // Begin Session Button from Tutor
+        $('#beginSession').on('click',function(){
+          if($('#beginSession').val() == "Begin Session"){
+            $('#beginSession').text(' End Session ')
+            //check if session began 
+            firebase.database().ref('appointments/'+ $('#seeAppointmentModal').attr('data-key')).update({
+                start_time: firebase.database.ServerValue.TIMESTAMP,
+                started: 1 // 0 = session not started, 1 = session began
+              })
+          }
+          else{
+              firebase.database().ref('appointments/'+ $('#seeAppointmentModal').attr('data-key')).update({
+                end_time: firebase.database.ServerValue.TIMESTAMP
+              })
+              //send request for rate
+          }
+
         })
 
         //Give Tour scripts
